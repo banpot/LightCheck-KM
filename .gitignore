@@ -3,4 +3,6 @@ __pycache__/
 .DS_Store
 node_modules/
 calibration/sim/_figdata.npz
+poster/poster.html
+poster/*_200ppi.*
 hardware/enclosure/render/node_modules/

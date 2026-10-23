@@ -164,6 +164,53 @@ def figure(res, gx, gy):
     plt.close(fig)
 
 
+def figure_poster(res):
+    """Compact before/after version sized for one 22 cm poster column (large type)."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager as fm
+    from matplotlib.colors import LinearSegmentedColormap
+    for f in glob.glob(os.path.join(ROOT, "tools", "fonts", "*.ttf")):
+        fm.fontManager.addfont(f)
+    plt.rcParams.update({"font.family": "IBM Plex Sans Thai", "font.size": 17, "svg.fonttype": "path"})
+    INK, INK2 = "#14202B", "#5B6B78"
+    cmap = LinearSegmentedColormap.from_list("seq", ["#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#104281"])
+    STATUS = {"PASS": ("#0ca30c", "✓ ผ่าน"), "VERIFY": ("#fab219", "? ยืนยัน"), "FAIL": ("#d03b3b", "× ไม่ผ่าน")}
+    fig, axes = plt.subplots(1, 2, figsize=(8.75, 4.6), gridspec_kw=dict(wspace=0.06))
+    for ax, key in zip(axes, ["before", "after"]):
+        sc = res["scenarios"][key]
+        im = ax.imshow(sc["_map"], origin="lower", extent=[0, ROOM["W"], 0, ROOM["L"]], cmap=cmap,
+                       vmin=100, vmax=700, interpolation="bilinear")
+        for k, (lx, ly) in enumerate(LUMINAIRES):
+            dead = SCENARIOS[key]["out"].get(k, 1.0) == 0.0
+            ax.add_patch(plt.Rectangle((lx - 0.3, ly - 0.3), 0.6, 0.6, fill=not dead, facecolor="#FFF6D5", zorder=4,
+                                       edgecolor=INK if not dead else "#d03b3b", lw=1.4, ls="-" if not dead else "--"))
+        for p in sc["points"]:
+            if p["type"] == "workstation":
+                col, _ = STATUS[p["decision"]]
+                ax.plot(p["x_m"], p["y_m"], "s", ms=13, color=col, mec="white", mew=2, zorder=7)
+            else:
+                ax.plot(p["x_m"], p["y_m"], "o", ms=5, color="white", mec=INK, mew=1, zorder=6)
+        ax.set_xticks([]), ax.set_yticks([])
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+        ax.set_title(f"{sc['label']}\nเฉลี่ย {sc['area_avg_lux']:.0f} · ต่ำสุด {sc['area_min_lux']:.0f} lx\nโต๊ะผ่าน {sc['ws_pass']}/{sc['n_ws']}",
+                     fontsize=16, color=INK, linespacing=1.35)
+    cb = fig.colorbar(im, ax=axes, orientation="horizontal", fraction=0.06, pad=0.04, aspect=40)
+    cb.set_label("lux ที่ระนาบ 75 ซม.", color=INK, fontsize=15)
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(labelsize=13, colors=INK2)
+    handles = [plt.Line2D([], [], marker="s", ls="", ms=12, color=c, mec="white", label=l) for c, l in STATUS.values()]
+    handles.append(plt.Line2D([], [], marker="o", ls="", ms=6, color="white", mec=INK, label="จุดกริด 2×2 ม."))
+    fig.legend(handles=handles, loc="lower center", ncol=4, frameon=False, fontsize=14.5, bbox_to_anchor=(0.5, -0.2),
+               handletextpad=0.3, columnspacing=1.0)
+    for ext in ("png", "svg"):
+        fig.savefig(os.path.join(OUT_IMG, f"office_twin_poster.{ext}"), dpi=300, bbox_inches="tight",
+                    transparent=(ext == "svg"))
+    plt.close(fig)
+
+
 def main():
     u95 = U95
     summ = os.path.join(ROOT, "calibration", "sim", "montecarlo_summary.json")
@@ -171,6 +218,7 @@ def main():
         u95 = json.load(open(summ, encoding="utf-8"))["guard_band_pct"]
     res, gx, gy = run(u95)
     figure(res, gx, gy)
+    figure_poster(res)
     out = {k: v for k, v in res.items() if k != "scenarios"}
     out["scenarios"] = {k: {kk: vv for kk, vv in v.items() if kk != "_map"} for k, v in res["scenarios"].items()}
     with open(os.path.join(ROOT, "tools", "survey", "office_twin_result.json"), "w", encoding="utf-8") as fh:

@@ -4,11 +4,36 @@
 และ `CAL_MODEL_VERSION = "CAL-UNSET"` (แสดงค่า Raw) ตัวเลขในโฟลเดอร์ `sim/` ทั้งหมด
 เป็น **ผลจำลอง (Monte Carlo)** จากสเปกที่ตีพิมพ์และสมมติฐานที่ระบุไว้ ไม่ใช่ผลการวัด
 
-## แบบจำลองชดเชย
+## สมการชดเชย (Compensation equation)
 
-```
-E_corrected = a × E_raw + b        (OLS: reference = a·raw + b, ชุด fit เท่านั้น)
-```
+**1) ค่า Raw Lux จากเซนเซอร์** (ไลบรารี Adafruit_TSL2591 v1.4.5 `calculateLux`)
+
+$$E_{raw}=\frac{(CH_0-CH_1)\left(1-\dfrac{CH_1}{CH_0}\right)}{CPL},\qquad CPL=\frac{t_{int}\,[\mathrm{ms}]\times G}{408}$$
+
+- $CH_0$ = ช่อง Full spectrum (visible + IR), $CH_1$ = ช่อง IR (ADC counts)
+- $t_{int}$ = integration time (v1.1 ใช้ 300 ms), $G$ = gain ที่ไลบรารีสมมติ (1, 25, 428, 9876)
+
+**2) ค่าเฉลี่ยลดการกระพริบของ LED** (rolling mean 5 ค่าล่าสุดที่ gain เดียวกัน)
+
+$$\bar{E}_{raw}=\frac{1}{5}\sum_{k=0}^{4}E_{raw,\,t-k}$$
+
+**3) สมการชดเชยเชิงเส้น** (ใน firmware: `CalLux = CAL_SLOPE * RawLux + CAL_OFFSET`)
+
+$$\boxed{E_{corrected}=a\,\bar{E}_{raw}+b}$$
+
+**4) หา a และ b ด้วย least squares** จากข้อมูลคู่ชุด fit เท่านั้น ($x_i$ = Raw ของต้นแบบ, $y_i$ = ค่าจากเครื่องอ้างอิงที่มีใบสอบเทียบ)
+
+$$a=\frac{\sum_i (x_i-\bar{x})(y_i-\bar{y})}{\sum_i (x_i-\bar{x})^2},\qquad b=\bar{y}-a\,\bar{x}$$
+
+**5) วัดความแม่นยำบนชุด validation (คนละ session)**
+
+$$\mathrm{MAPE}=\frac{100}{n}\sum_{i=1}^{n}\frac{|E_{corrected,i}-E_{ref,i}|}{E_{ref,i}},\qquad U_{95}=P_{95}\left(\frac{|E_{corrected}-E_{ref}|}{E_{ref}}\right)$$
+
+**6) กติกาตัดสินผล (guard band)**: ถ้า $|E_{corrected}-E_{เกณฑ์}| \le U_{95}\cdot E_{เกณฑ์}$ ให้ยืนยันด้วยเครื่องมาตรฐาน
+
+**ตัวอย่างจากผลจำลอง** (ไม่ใช่ค่าจริง): $a = 1.596$, $b = -4.2$ lx
+ถ้าต้นแบบอ่าน Raw = 250 lx จะได้ $E_{corrected} = 1.596 \times 250 - 4.2 = 394.8$ lx
+ซึ่งอยู่ในช่วงยืนยันของเกณฑ์ 400 lux (371–429 lx เมื่อ $U_{95}$ = 7.3 %) จึงต้องวัดซ้ำด้วยเครื่องมาตรฐาน
 
 ## ขั้นตอนกับข้อมูลจริง
 
