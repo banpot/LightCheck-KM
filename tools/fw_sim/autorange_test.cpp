@@ -1,7 +1,9 @@
 #include "Arduino.h"
 #include "Wire.h"
+#include <random>
 unsigned long g_ms=0; SerialMock Serial; TwoWire Wire;
 double g_true_lux=400; double g_gain_actual[4]={1.0,24.5,400.0,9200.0}; double g_ratio_ir=0.132;
+double g_jitter=0.0; std::mt19937 g_rng(2569);
 #include SKETCH  // passed with -DSKETCH="\"file.ino\""
 #include <vector>
 struct R { int levels=0, osc=0, sat=0, office=0, office_med=0; };

@@ -1,6 +1,6 @@
 # ผังการต่อวงจร LightCheck KM
 
-เครื่องต้นแบบใช้ **บัส I²C ร่วมกัน 2 สาย** (SDA, SCL) ระหว่าง Wemos D1 mini กับอุปกรณ์ 2 ตัว คือเซนเซอร์แสง TSL2591 และจอ LCD1602 ที่มี I²C backpack (PCF8574A) จึงใช้สายน้อยและประกอบซ้ำได้ง่าย ผังนี้ตรงกับค่าในเฟิร์มแวร์ `firmware/LightCheck_TSL2591_Calibrated.ino` (`Wire.begin(D2, D1)`, `TSL2591_ADDR 0x29`, `LCD_ADDR 0x3F`)
+เครื่องต้นแบบใช้ **บัส I²C ร่วมกัน 2 สาย** (SDA, SCL) ระหว่าง Wemos D1 mini กับอุปกรณ์ 2 ตัว คือเซนเซอร์แสง TSL2591 และจอ LCD1602 ที่มี I²C backpack (PCF8574A) จึงใช้สายน้อยและประกอบซ้ำได้ง่าย ผังนี้ตรงกับค่าในเฟิร์มแวร์ `firmware/LightCheck_TSL2591_Calibrated/LightCheck_TSL2591_Calibrated.ino` (`Wire.begin(D2, D1)`, `TSL2591_ADDR 0x29`, `LCD_ADDR 0x3F`)
 
 ![ผังการต่อวงจร](img/wiring_diagram.png)
 

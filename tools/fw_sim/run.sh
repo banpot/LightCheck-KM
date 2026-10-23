@@ -14,3 +14,9 @@ for v in v10 current; do
     "/tmp/fwsim_$v" $gains
   done
 done
+echo
+echo "== stabilisation (rolling mean of 5, '*' when CV < 2 %) at 400 lx =="
+cp "$FW" mock/current.ino
+g++ -std=c++17 -w -Imock -DSKETCH="\"current.ino\"" -x c++ flicker_test.cpp -o /tmp/fwsim_flicker
+/tmp/fwsim_flicker
+rm -f mock/current.ino mock/v10.ino

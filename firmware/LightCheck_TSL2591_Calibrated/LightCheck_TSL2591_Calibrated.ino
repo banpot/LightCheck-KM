@@ -64,6 +64,19 @@
   still give >= 1500 counts, and leaves LOW as soon as MED fits.
   Result: no hunting, and the office range (~100 to ~2,900 lux) is always
   read on MED gain = one calibration model.
+
+  v1.1.0 reading stabilisation (field lesson)
+  -------------------------------------------
+  LED office lighting is not like daylight: its spectrum is different and its
+  output flickers at twice the mains frequency (Thailand 50 Hz -> 100 Hz,
+  10 ms period), so single readings jump around. Every TSL2591 integration
+  time (100-600 ms) is a whole number of 10 ms periods, so one reading always
+  integrates complete flicker cycles; the remaining jitter (PWM dimming,
+  driver ripple, hand movement) is removed by a rolling mean of the last
+  AVG_WINDOW valid readings taken at the same gain. The LCD shows '*' when
+  the window is full and the coefficient of variation is < STABLE_CV_PCT (2 %,
+  i.e. the 5-reading mean is good to about 1 %):
+  record values only when '*' is shown.
 */
 
 #include <Wire.h>
@@ -113,6 +126,12 @@ const float MIN_VALID_CORRECTED_LUX = 0.0f;
 // true  = CSV rows for paired-measurement logging; paste into
 //         calibration/paired_measurements.csv next to the reference value.
 const bool SERIAL_CSV = false;
+
+// -------------------------------------------------------------------------
+// STABILISATION (LED flicker / mains ripple)
+// -------------------------------------------------------------------------
+const uint8_t AVG_WINDOW    = 5;     // readings in the rolling mean (1 = off)
+const float   STABLE_CV_PCT = 2.0f;  // stable when CV of the window < 2 % (mean within ~1 %)
 
 // -------------------------------------------------------------------------
 // AUTO-RANGE PARAMETERS (raw ADC counts)
@@ -191,6 +210,36 @@ float gainFactor(tsl2591Gain_t g) {
     case TSL2591_GAIN_MAX:  return 9876.0f;
   }
   return 1.0f;
+}
+
+// Rolling mean of valid raw-lux readings taken at one gain.
+float         avgBuf[AVG_WINDOW];
+uint8_t       avgCount = 0, avgHead = 0;
+tsl2591Gain_t avgGain  = TSL2591_GAIN_MED;
+
+void avgReset() { avgCount = 0; avgHead = 0; }
+
+void avgPush(float v) {
+  avgBuf[avgHead] = v;
+  avgHead = (uint8_t)((avgHead + 1) % AVG_WINDOW);
+  if (avgCount < AVG_WINDOW) avgCount++;
+}
+
+float avgMean() {
+  if (avgCount == 0) return NAN;
+  float s = 0.0f;
+  for (uint8_t i = 0; i < avgCount; i++) s += avgBuf[i];
+  return s / avgCount;
+}
+
+// Coefficient of variation (sample SD / mean) in percent.
+float avgCvPct() {
+  if (avgCount < 2) return NAN;
+  float m = avgMean();
+  if (!(m > 0.0f)) return NAN;
+  float ss = 0.0f;
+  for (uint8_t i = 0; i < avgCount; i++) ss += (avgBuf[i] - m) * (avgBuf[i] - m);
+  return 100.0f * sqrtf(ss / (avgCount - 1)) / m;
 }
 
 bool calibrationInScope(tsl2591Gain_t g, tsl2591IntegrationTime_t t) {
@@ -290,7 +339,7 @@ void printCalibrationInfo() {
   Serial.println(F("Formula: CalLux = a*RawLux + b"));
   Serial.println(F("----------------------------------"));
   if (SERIAL_CSV) {
-    Serial.println(F("ms,fw,cal_model,cal_on,gain,tint_ms,full,ir,raw_lux,cal_lux,cal_scope"));
+    Serial.println(F("ms,fw,cal_model,cal_on,gain,tint_ms,full,ir,raw_lux,raw_avg_lux,cv_pct,n_avg,stable,cal_lux,cal_scope"));
   }
 }
 
@@ -376,8 +425,17 @@ void loop() {
 
   // Raw lux is the library result before local correction.
   float rawLux = saturated ? -1.0f : tsl.calculateLux(full, ir);
-  float calLux = compensateLux(rawLux);
   bool rawOk = !(saturated || rawLux < 0.0f || isnan(rawLux) || isinf(rawLux));
+
+  // Stabilisation: rolling mean at one gain; restart on gain change/invalid.
+  if (g != avgGain || !rawOk) { avgReset(); avgGain = g; }
+  if (rawOk) avgPush(rawLux);
+  float rawAvg = rawOk ? avgMean() : rawLux;
+  float cvPct  = avgCvPct();
+  bool  stable = rawOk && (avgCount == AVG_WINDOW) && !isnan(cvPct) && (cvPct < STABLE_CV_PCT);
+
+  // Compensation is applied to the stabilised (averaged) raw value.
+  float calLux = compensateLux(rawAvg);
   bool calOk = !(saturated || calLux < 0.0f || isnan(calLux) || isinf(calLux));
 
   uint16_t visible = (full > ir) ? (full - ir) : 0;
@@ -394,6 +452,12 @@ void loop() {
     Serial.print(ir);                Serial.print(',');
     if (rawOk) Serial.print(rawLux, 3); else Serial.print(saturated ? F("SAT") : F("ERR"));
     Serial.print(',');
+    if (rawOk) Serial.print(rawAvg, 3); else Serial.print(saturated ? F("SAT") : F("ERR"));
+    Serial.print(',');
+    if (!isnan(cvPct)) Serial.print(cvPct, 2);
+    Serial.print(',');
+    Serial.print(avgCount);          Serial.print(',');
+    Serial.print(stable ? 1 : 0);    Serial.print(',');
     if (calOk) Serial.print(calLux, 3); else Serial.print(saturated ? F("SAT") : F("ERR"));
     Serial.print(',');
     Serial.println(inScope ? F("OK") : F("OUT"));
@@ -407,6 +471,13 @@ void loop() {
     if (saturated)      Serial.print(F("SAT"));
     else if (!rawOk)    Serial.print(F("ERR"));
     else                Serial.print(rawLux, 3);
+    if (rawOk) {
+      Serial.print(F(" RawAvg=")); Serial.print(rawAvg, 3);
+      Serial.print(F(" N="));      Serial.print(avgCount);
+      Serial.print(F(" CV="));
+      if (isnan(cvPct)) Serial.print(F("-")); else Serial.print(cvPct, 2);
+      Serial.print(F("% Stable=")); Serial.print(stable ? F("Y") : F("N"));
+    }
 
     Serial.print(F(" CalLux="));
     if (saturated)      Serial.print(F("SAT"));
@@ -419,7 +490,7 @@ void loop() {
   }
 
   // ---- LCD ----
-  // Line 1: show compensated value when enabled; otherwise raw value.
+  // Line 1: stabilised value (compensated when enabled; otherwise raw).
   // Prefix: C = calibrated, R = raw, ! = calibrated but outside the
   // gain/timing the coefficients were validated at.
   char buf[17];
@@ -431,7 +502,8 @@ void loop() {
   } else {
     char fbuf[12];
     dtostrf(calLux, 7, 2, fbuf);
-    snprintf(buf, sizeof(buf), "%cLux:%s", mode, fbuf);
+    // "*" at the end of line 1 = stable (rolling window full, CV < 2 %)
+    snprintf(buf, sizeof(buf), "%cLux:%s %c", mode, fbuf, stable ? '*' : ' ');
   }
   lcdLine(0, buf);
 

@@ -22,3 +22,11 @@
   ascending sweep        levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 164/170
   descending sweep       levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 171/171
   dark->office jumps     levels=  70 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 67/70
+
+== stabilisation (rolling mean of 5, '*' when CV < 2 %) at 400 lx ==
+jitter/reading  CV(single raw)  CV(LCD value)  readings with '*'
+     0.3 %          0.30 %          0.12 %          100.0 %
+     0.7 %          0.70 %          0.33 %          100.0 %
+     1.5 %          1.50 %          0.64 %           91.2 %
+     3.0 %          3.00 %          1.53 %           18.5 %
+     6.0 %          6.00 %          2.61 %            1.0 %

@@ -8,6 +8,9 @@
   2–60,000 lx; office levels near ~260 lx included). v1.1 predicts the next-gain counts
   (step up only if < 70 % FS and Full < 1000), steps down at 90 % FS, and leaves HIGH/MAX or LOW
   as soon as MED fits. Office light (~100–2,900 lx) is now always read on MED gain.
+- **Added** reading stabilisation for LED flicker (100 Hz on the 50 Hz grid) and PWM dimming:
+  rolling mean of the last 5 valid readings at one gain, `CV`/`Stable` in the log, `*` on the LCD
+  when CV < 2 %. Compensation is applied to the averaged value. Host test: displayed jitter ÷≈2.3.
 - **Added** `CAL_GAIN` / `CAL_TIMING` traceability; Serial `CalScope=OK|OUT`, LCD prefix `!` when a
   calibrated reading was taken at another gain.
 - **Added** optional CSV serial output (`SERIAL_CSV`) for paired-measurement logging.
