@@ -81,7 +81,7 @@ body{{position:relative;overflow:hidden;font-size:23pt;line-height:1.4}}
 .t3{{font-family:Plex;font-weight:600;font-size:36pt;margin-top:14pt;color:#2b2b2b}}
 .t4{{font-family:Plex;font-weight:500;font-size:28pt;color:#3d3d3d;margin-top:0pt}}
 .logo{{left:1870pt;top:70pt;width:345pt}}
-.tag{{left:1862pt;top:270pt;width:360pt;text-align:center}}
+.tag{{left:1862pt;top:322pt;width:360pt;text-align:center}}
 .pill{{display:inline-block;background:var(--blue);color:#fff;border-radius:40pt;padding:5pt 16pt;font-weight:600;
 font-size:17pt;line-height:1.3;white-space:nowrap}}
 .pill.t{{background:var(--teal)}}
@@ -201,7 +201,7 @@ margin-top:10pt;text-align:center}}
   <div class="t3">ว่าที่ ร.ต. ดร. บรรพต ดลวิทยากุล</div>
   <div class="t4">ฝ่ายบริหารและพัฒนาดิจิทัลเทคโนโลยี สำนักดิจิทัลเทคโนโลยี มหาวิทยาลัยศิลปากร</div>
 </div>
-<img class="abs logo" src="assets/bdt_logo_stacked.svg" alt="" style="width:236pt;left:1924pt;top:30pt">
+<img class="abs logo" src="assets/bdt_logo_stacked.svg" alt="" style="width:236pt;left:1924pt;top:90pt">
 <div class="abs tag"><span class="pill">KM · ด้านการบริหารจัดการและสร้างนวัตกรรม</span></div>
 <div class="abs bar"></div>
 <div class="abs vdiv" style="left:755pt"></div><div class="abs vdiv" style="left:1511pt"></div>
