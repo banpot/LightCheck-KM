@@ -57,6 +57,7 @@ P วางแผน (เกณฑ์ + ผังจุดวัด) → D ต�
 | `tools/fw_sim/` | ทดสอบ logic ของ firmware บนคอมพิวเตอร์ (ไม่ต้องมีฮาร์ดแวร์) |
 | `tools/diagrams/` | ตัวสร้างผังวงจร (รวมแหล่งจ่ายไฟ USB-C), ภาพอุปกรณ์, flow firmware แบบ SVG |
 | `poster/` | โปสเตอร์ KM Day 2569: PDF, **ไฟล์ต้นฉบับ PowerPoint 80 × 100 ซม. ที่แก้ไขได้**, ตัวแปลง CMYK |
+| `presentation/` | สไลด์ Oral Presentation KM Day 2569 (PowerPoint แก้ไขได้ พร้อม speaker notes และสไลด์สำรองตอบคำถาม) |
 | `templates/` | แบบบันทึกผลมาตรฐานของหน่วยงาน |
 | `evidence/` | ภาพการตรวจวัด Before/After (ปิดบังข้อมูลส่วนบุคคล) |
 | `lessons-learned.md`, `CHANGELOG.md` | บทเรียนและวิวัฒนาการขององค์ความรู้ |
