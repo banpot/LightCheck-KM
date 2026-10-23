@@ -1,0 +1,419 @@
+{
+  "_note": "SIMULATION - representative office, not measured",
+  "room": {
+    "name": "ห้องตัวอย่าง (จำลอง) 8 × 6 ม.",
+    "W": 8.0,
+    "L": 6.0,
+    "H": 2.7,
+    "plane": 0.75,
+    "rho": 0.45
+  },
+  "u95_pct": 7.328520261896494,
+  "grid_x": [
+    1.0,
+    3.0,
+    5.0,
+    7.0
+  ],
+  "grid_y": [
+    1.0,
+    3.0,
+    5.0
+  ],
+  "scenarios": {
+    "before": {
+      "label": "ก่อนปรับปรุง",
+      "points": [
+        {
+          "point_id": "A1A",
+          "type": "area",
+          "x_m": 1.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 357.9,
+          "reading_lux": 357.9,
+          "decision": null
+        },
+        {
+          "point_id": "A1B",
+          "type": "area",
+          "x_m": 3.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 354.9,
+          "reading_lux": 358.8,
+          "decision": null
+        },
+        {
+          "point_id": "A1C",
+          "type": "area",
+          "x_m": 5.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 318.5,
+          "reading_lux": 315.2,
+          "decision": null
+        },
+        {
+          "point_id": "A1D",
+          "type": "area",
+          "x_m": 7.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 250.9,
+          "reading_lux": 242.6,
+          "decision": null
+        },
+        {
+          "point_id": "A2A",
+          "type": "area",
+          "x_m": 1.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 327.0,
+          "reading_lux": 321.4,
+          "decision": null
+        },
+        {
+          "point_id": "A2B",
+          "type": "area",
+          "x_m": 3.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 349.2,
+          "reading_lux": 336.3,
+          "decision": null
+        },
+        {
+          "point_id": "A2C",
+          "type": "area",
+          "x_m": 5.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 291.1,
+          "reading_lux": 291.7,
+          "decision": null
+        },
+        {
+          "point_id": "A2D",
+          "type": "area",
+          "x_m": 7.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 180.2,
+          "reading_lux": 189.3,
+          "decision": null
+        },
+        {
+          "point_id": "A3A",
+          "type": "area",
+          "x_m": 1.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 357.1,
+          "reading_lux": 350.5,
+          "decision": null
+        },
+        {
+          "point_id": "A3B",
+          "type": "area",
+          "x_m": 3.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 349.7,
+          "reading_lux": 341.6,
+          "decision": null
+        },
+        {
+          "point_id": "A3C",
+          "type": "area",
+          "x_m": 5.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 273.0,
+          "reading_lux": 278.0,
+          "decision": null
+        },
+        {
+          "point_id": "A3D",
+          "type": "area",
+          "x_m": 7.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 118.8,
+          "reading_lux": 120.4,
+          "decision": null
+        },
+        {
+          "point_id": "W01",
+          "type": "workstation",
+          "x_m": 1.9,
+          "y_m": 1.25,
+          "height_cm": "desk",
+          "true_lux": 400.4,
+          "reading_lux": 401.9,
+          "decision": "VERIFY"
+        },
+        {
+          "point_id": "W02",
+          "type": "workstation",
+          "x_m": 4.6,
+          "y_m": 1.25,
+          "height_cm": "desk",
+          "true_lux": 384.4,
+          "reading_lux": 371.0,
+          "decision": "VERIFY"
+        },
+        {
+          "point_id": "W03",
+          "type": "workstation",
+          "x_m": 7.1,
+          "y_m": 1.5,
+          "height_cm": "desk",
+          "true_lux": 263.9,
+          "reading_lux": 263.6,
+          "decision": "FAIL"
+        },
+        {
+          "point_id": "W04",
+          "type": "workstation",
+          "x_m": 1.9,
+          "y_m": 4.75,
+          "height_cm": "desk",
+          "true_lux": 398.7,
+          "reading_lux": 409.0,
+          "decision": "VERIFY"
+        },
+        {
+          "point_id": "W05",
+          "type": "workstation",
+          "x_m": 4.0,
+          "y_m": 3.0,
+          "height_cm": "desk",
+          "true_lux": 358.2,
+          "reading_lux": 340.2,
+          "decision": "FAIL"
+        },
+        {
+          "point_id": "W06",
+          "type": "workstation",
+          "x_m": 7.2,
+          "y_m": 5.3,
+          "height_cm": "desk",
+          "true_lux": 109.3,
+          "reading_lux": 107.5,
+          "decision": "FAIL"
+        }
+      ],
+      "area_avg_lux": 291.97499999999997,
+      "area_min_lux": 120.4,
+      "area_avg_decision": "VERIFY",
+      "area_min_decision": "FAIL",
+      "uniformity": 0.4123640722664612,
+      "map_min": 91.11377416490248,
+      "map_max": 448.7010571849072,
+      "ws_pass": 0,
+      "ws_verify": 3,
+      "ws_fail": 3,
+      "n_ws": 6,
+      "n_area": 12
+    },
+    "after": {
+      "label": "หลังปรับปรุง",
+      "points": [
+        {
+          "point_id": "A1A",
+          "type": "area",
+          "x_m": 1.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 460.1,
+          "reading_lux": 427.4,
+          "decision": null
+        },
+        {
+          "point_id": "A1B",
+          "type": "area",
+          "x_m": 3.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 464.9,
+          "reading_lux": 442.5,
+          "decision": null
+        },
+        {
+          "point_id": "A1C",
+          "type": "area",
+          "x_m": 5.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 464.9,
+          "reading_lux": 432.9,
+          "decision": null
+        },
+        {
+          "point_id": "A1D",
+          "type": "area",
+          "x_m": 7.0,
+          "y_m": 1.0,
+          "height_cm": 75,
+          "true_lux": 460.1,
+          "reading_lux": 456.1,
+          "decision": null
+        },
+        {
+          "point_id": "A2A",
+          "type": "area",
+          "x_m": 1.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 424.1,
+          "reading_lux": 404.0,
+          "decision": null
+        },
+        {
+          "point_id": "A2B",
+          "type": "area",
+          "x_m": 3.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 464.1,
+          "reading_lux": 468.8,
+          "decision": null
+        },
+        {
+          "point_id": "A2C",
+          "type": "area",
+          "x_m": 5.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 464.1,
+          "reading_lux": 466.8,
+          "decision": null
+        },
+        {
+          "point_id": "A2D",
+          "type": "area",
+          "x_m": 7.0,
+          "y_m": 3.0,
+          "height_cm": 75,
+          "true_lux": 424.1,
+          "reading_lux": 421.1,
+          "decision": null
+        },
+        {
+          "point_id": "A3A",
+          "type": "area",
+          "x_m": 1.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 460.1,
+          "reading_lux": 416.8,
+          "decision": null
+        },
+        {
+          "point_id": "A3B",
+          "type": "area",
+          "x_m": 3.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 464.9,
+          "reading_lux": 455.5,
+          "decision": null
+        },
+        {
+          "point_id": "A3C",
+          "type": "area",
+          "x_m": 5.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 464.9,
+          "reading_lux": 464.0,
+          "decision": null
+        },
+        {
+          "point_id": "A3D",
+          "type": "area",
+          "x_m": 7.0,
+          "y_m": 5.0,
+          "height_cm": 75,
+          "true_lux": 460.1,
+          "reading_lux": 462.1,
+          "decision": null
+        },
+        {
+          "point_id": "W01",
+          "type": "workstation",
+          "x_m": 1.9,
+          "y_m": 1.25,
+          "height_cm": "desk",
+          "true_lux": 513.8,
+          "reading_lux": 484.4,
+          "decision": "PASS"
+        },
+        {
+          "point_id": "W02",
+          "type": "workstation",
+          "x_m": 4.6,
+          "y_m": 1.25,
+          "height_cm": "desk",
+          "true_lux": 531.9,
+          "reading_lux": 522.4,
+          "decision": "PASS"
+        },
+        {
+          "point_id": "W03",
+          "type": "workstation",
+          "x_m": 7.1,
+          "y_m": 1.5,
+          "height_cm": "desk",
+          "true_lux": 496.1,
+          "reading_lux": 478.0,
+          "decision": "PASS"
+        },
+        {
+          "point_id": "W04",
+          "type": "workstation",
+          "x_m": 1.9,
+          "y_m": 4.75,
+          "height_cm": "desk",
+          "true_lux": 513.8,
+          "reading_lux": 498.2,
+          "decision": "PASS"
+        },
+        {
+          "point_id": "W05",
+          "type": "workstation",
+          "x_m": 4.0,
+          "y_m": 3.0,
+          "height_cm": "desk",
+          "true_lux": 496.3,
+          "reading_lux": 516.0,
+          "decision": "PASS"
+        },
+        {
+          "point_id": "W06",
+          "type": "workstation",
+          "x_m": 7.2,
+          "y_m": 5.3,
+          "height_cm": "desk",
+          "true_lux": 583.7,
+          "reading_lux": 566.0,
+          "decision": "PASS"
+        }
+      ],
+      "area_avg_lux": 443.16666666666674,
+      "area_min_lux": 404.0,
+      "area_avg_decision": "PASS",
+      "area_min_decision": "PASS",
+      "uniformity": 0.9116209101165851,
+      "map_min": 219.44361001624594,
+      "map_max": 594.0971017200231,
+      "ws_pass": 6,
+      "ws_verify": 0,
+      "ws_fail": 0,
+      "n_ws": 6,
+      "n_area": 12
+    }
+  }
+}
