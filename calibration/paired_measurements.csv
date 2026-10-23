@@ -1,0 +1,7 @@
+# LightCheck KM - paired measurements (REAL DATA ONLY)
+# 1) role=fit  : session 1, used to derive a and b
+# 2) role=val  : a separate session (another day), used only to report accuracy
+# raw_lux = RawLux from the serial log (CalMode=OFF), ref_lux = calibrated reference meter
+# Put the reference head and the TSL2591 in the same plane, side by side, no shadow (SOP 9.1.5 b)
+# Then run:  python fit_calibration.py paired_measurements.csv --model CAL-YYYYMMDD --reference "brand model S/N cert date"
+session,role,point_id,raw_lux,ref_lux,gain,tint_ms,source,notes
