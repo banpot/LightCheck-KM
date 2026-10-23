@@ -1,0 +1,39 @@
+# กระบวนการจัดการความรู้ของ LightCheck KM
+
+## 1. วงจรหลักของโครงการ
+
+```
+ตรวจวัด → วิเคราะห์ → ปรับปรุง → ตรวจซ้ำ → ถอดบทเรียน → ใช้ซ้ำ → (กลับไปตรวจวัด)
+```
+
+หัวใจของงานไม่ใช่การประดิษฐ์ lux meter ราคาถูก แต่คือการเปลี่ยนข้อมูลหน้างานให้เป็นความรู้ที่
+องค์กรนำกลับมาใช้ได้ และให้การปรับปรุงสภาพแวดล้อมเกิดจากหลักฐานแทนความรู้สึก
+
+## 2. เทียบกับกระบวนการจัดการความรู้ 7 ขั้น
+
+| ขั้น KM | สิ่งที่ทำในโครงการ | หลักฐานใน repository |
+|---|---|---|
+| 1. บ่งชี้ความรู้ | "แสงที่รู้สึกว่าพอ" ยืนยันไม่ได้ว่าผ่านเกณฑ์ Green Office 5.2.1 | `README.md`, `docs/green-office-5.2.1.md` |
+| 2. สร้างและแสวงหาความรู้ | ศึกษา datasheet เกณฑ์กรมสวัสดิการฯ งานวิจัย และสร้างเครื่องต้นแบบ | `docs/references.md`, `calibration/expected_bias_from_datasheet.py` |
+| 3. จัดความรู้ให้เป็นระบบ | แยก firmware / calibration / SOP / hardware / templates | โครงสร้างโฟลเดอร์ทั้งหมด |
+| 4. ประมวลและกลั่นกรอง | ตรวจสอบตัวเลขกับ datasheet (เช่น saturation 36,863) และทดสอบ firmware ด้วย simulation | `tools/fw_sim/`, `calibration/simulate_calibration.py` |
+| 5. เข้าถึงความรู้ | Public repository ภาษาไทย ไฟล์ STL ดาวน์โหลดได้ QR บนโปสเตอร์ | GitHub |
+| 6. แบ่งปันแลกเปลี่ยน | Issues ถาม-ตอบ, นำเสนอ Silpakorn KM Day 2569, ชุด Light Survey Package | `docs/km-dissemination.md` |
+| 7. การเรียนรู้ | บันทึกบทเรียนและปรับ firmware/SOP ทุกรอบ | `lessons-learned.md`, `CHANGELOG.md` |
+
+## 3. SECI: เปลี่ยน tacit เป็น explicit
+
+| โหมด | ในโครงการนี้ |
+|---|---|
+| **S**ocialization | ผู้พัฒนาสาธิตการวางหัวรับแสง การกันเงา และการอ่านค่าให้ผู้สำรวจหน้างาน |
+| **E**xternalization | เขียนวิธีคิดเป็น code (auto-range, compensation, guard band) และ SOP |
+| **C**ombination | รวมเกณฑ์กฎหมาย + datasheet + ผลจำลอง เป็นแนวทางตัดสินผลเดียวกัน |
+| **I**nternalization | ผู้ใช้ทำตามคู่มือ ใช้ `grid_planner.py` และแบบบันทึก จนทำเองได้และส่งบทเรียนกลับเข้า repo |
+
+## 4. Capture – Store – Share – Review – Improve
+
+- **Capture**: Serial log แยก Raw/Corrected พร้อม gain, integration time และ calibration model
+- **Store**: ข้อมูลคู่ รายงาน calibration และ firmware ถูก commit พร้อมกัน ตรวจย้อนกลับได้ทุกค่า
+- **Share**: Public repository + คู่มือภาษาไทย + ไฟล์ STL
+- **Review**: เปลี่ยนเซนเซอร์ กล่อง ไลบรารี หรือ logic ต้องทวนสอบใหม่ (KM 9.1.12)
+- **Improve**: บทเรียน เช่น bug auto-range v1.0 → v1.1 ถูกบันทึกเป็นความรู้ขององค์กร
