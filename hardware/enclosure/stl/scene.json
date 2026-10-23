@@ -1,0 +1,135 @@
+{
+ "outer": [
+  108,
+  63,
+  26
+ ],
+ "z_lid_bot": 23.6,
+ "lcd_view": {
+  "cx": 4.200000000000003,
+  "cy": -10.8,
+  "w": 64.5,
+  "d": 16.0,
+  "z": 25.0
+ },
+ "parts": [
+  {
+   "file": "../stl/lightcheck_base.stl",
+   "name": "base",
+   "role": "base",
+   "color": "#0E7766"
+  },
+  {
+   "file": "../stl/proxies/_lid_assembled.stl",
+   "name": "lid",
+   "role": "lid",
+   "color": "#F4F4F0"
+  },
+  {
+   "file": "../stl/proxies/lcd_pcb.stl",
+   "name": "lcd_pcb",
+   "role": "lcd",
+   "color": "#1f7a3a"
+  },
+  {
+   "file": "../stl/proxies/lcd_bezel.stl",
+   "name": "lcd_bezel",
+   "role": "lcd",
+   "color": "#2b2f33"
+  },
+  {
+   "file": "../stl/proxies/lcd_glass.stl",
+   "name": "lcd_glass",
+   "role": "lcd",
+   "color": "#1f5fd6"
+  },
+  {
+   "file": "../stl/proxies/lcd_backpack.stl",
+   "name": "lcd_backpack",
+   "role": "lcd",
+   "color": "#121417"
+  },
+  {
+   "file": "../stl/proxies/lcd_trimpot.stl",
+   "name": "lcd_trimpot",
+   "role": "lcd",
+   "color": "#2a5bd7"
+  },
+  {
+   "file": "../stl/proxies/lcd_header.stl",
+   "name": "lcd_header",
+   "role": "lcd",
+   "color": "#151515"
+  },
+  {
+   "file": "../stl/proxies/lcd_i2c_pins.stl",
+   "name": "lcd_i2c_pins",
+   "role": "lcd",
+   "color": "#c9a646"
+  },
+  {
+   "file": "../stl/proxies/d1_pcb.stl",
+   "name": "d1_pcb",
+   "role": "d1",
+   "color": "#1d63c9"
+  },
+  {
+   "file": "../stl/proxies/d1_shield.stl",
+   "name": "d1_shield",
+   "role": "d1",
+   "color": "#c8ccd2"
+  },
+  {
+   "file": "../stl/proxies/d1_bottom.stl",
+   "name": "d1_bottom",
+   "role": "d1",
+   "color": "#222222"
+  },
+  {
+   "file": "../stl/proxies/d1_usb.stl",
+   "name": "d1_usb",
+   "role": "d1",
+   "color": "#b8bcc2"
+  },
+  {
+   "file": "../stl/proxies/tsl_pcb.stl",
+   "name": "tsl_pcb",
+   "role": "tsl",
+   "color": "#141414"
+  },
+  {
+   "file": "../stl/proxies/tsl_sensor.stl",
+   "name": "tsl_sensor",
+   "role": "tsl",
+   "color": "#d9d4c4"
+  },
+  {
+   "file": "../stl/proxies/tsl_jst.stl",
+   "name": "tsl_jst",
+   "role": "tsl",
+   "color": "#f2f2ee"
+  },
+  {
+   "file": "../stl/proxies/tsl_header.stl",
+   "name": "tsl_header",
+   "role": "tsl",
+   "color": "#151515"
+  },
+  {
+   "file": "../stl/proxies/tsl_pins.stl",
+   "name": "tsl_pins",
+   "role": "tsl",
+   "color": "#d4af37"
+  }
+ ],
+ "print": [
+  {
+   "file": "../stl/lightcheck_base.stl",
+   "color": "#0E7766"
+  },
+  {
+   "file": "../stl/lightcheck_lid.stl",
+   "color": "#F4F4F0"
+  }
+ ]
+}
