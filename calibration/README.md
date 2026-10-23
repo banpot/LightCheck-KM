@@ -13,7 +13,7 @@ $$E_{raw}=\frac{(CH_0-CH_1)\left(1-\dfrac{CH_1}{CH_0}\right)}{CPL},\qquad CPL=\f
 - $CH_0$ = ช่อง Full spectrum (visible + IR), $CH_1$ = ช่อง IR (ADC counts)
 - $t_{int}$ = integration time (v1.1 ใช้ 300 ms), $G$ = gain ที่ไลบรารีสมมติ (1, 25, 428, 9876)
 
-**2) ค่าเฉลี่ยลดการกระพริบของ LED** (rolling mean 5 ค่าล่าสุดที่ gain เดียวกัน)
+**2) ค่าเฉลี่ยลดการกะพริบของ LED** (rolling mean 5 ค่าล่าสุดที่ gain เดียวกัน)
 
 $$\bar{E}_{raw}=\frac{1}{5}\sum_{k=0}^{4}E_{raw,\,t-k}$$
 
@@ -40,7 +40,7 @@ $$\mathrm{MAPE}=\frac{100}{n}\sum_{i=1}^{n}\frac{|E_{corrected,i}-E_{ref,i}|}{E_
 1. เลือกเครื่องอ้างอิงที่ได้มาตรฐานและมีใบสอบเทียบที่ยังใช้ได้ บันทึกยี่ห้อ รุ่น S/N วันที่ และเลขที่ certificate
 2. วางหัวรับแสงของเครื่องอ้างอิงกับ TSL2591 ในระนาบเดียวกัน ทิศเดียวกัน และชิดกัน ระวังเงาและการสะท้อน
 3. ตั้ง `SERIAL_CSV = true` เก็บข้อมูลคู่ 100–1,000 lux เน้นใกล้ 150 / 300 / 400 / 500 lux บันทึกซ้ำหลายครั้ง
-   ใช้ค่า `raw_avg_lux` เฉพาะแถวที่ `stable = 1` (ค่าเฉลี่ย 5 รอบนิ่งแล้ว ลดผลการกระพริบของ LED)
+   ใช้ค่า `raw_avg_lux` เฉพาะแถวที่ `stable = 1` (ค่าเฉลี่ย 5 รอบนิ่งแล้ว ลดผลการกะพริบของ LED)
 4. แบ่งเป็น `role=fit` (session 1) และ `role=val` (อีก session / อีกวัน) ใน `paired_measurements.csv`
 5. รัน
    ```bash

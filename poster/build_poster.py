@@ -309,7 +309,7 @@ margin-top:10pt;text-align:center}}
   <h3>กล่องพิมพ์ 3 มิติ (ไฟล์ STL เปิดให้ดาวน์โหลด)</h3>
   <img class="wide" src="assets/enclosure_hero.png" alt="" style="width:530pt;margin:-4pt auto 0">
   <div class="cap"><b>ภาพที่ 3</b> Render จากไฟล์ STL · 108×63×26 มม. · หัวรับแสงเสมอผิวฝา ไม่มีขอบบังแสง ·
-  ช่องน็อต 1/4" ใต้กล่องสำหรับขาตั้งกล้องที่ระดับ 75 ซม.</div>
+  ช่องนอต 1/4" ใต้กล่องสำหรับขาตั้งกล้องที่ระดับ 75 ซม.</div>
   <div class="two" style="margin-top:6pt">
     <div><img src="assets/photos/print_ender6.jpg" alt="" data-name="ภาพที่ 4 พิมพ์กล่อง Ender-6" style="width:100%;height:225pt;object-fit:cover;border-radius:14pt;display:block">
       <div class="cap"><b>ภาพที่ 4</b> พิมพ์ด้วย Creality Ender-6</div></div>
@@ -321,7 +321,7 @@ margin-top:10pt;text-align:center}}
     <li><span class="k">1</span><span><b>Self-check I²C</b> ก่อนวัด ป้องกันการบันทึกค่าจากระบบที่ต่อผิด</span></li>
     <li><span class="k">2</span><span><b>ตรวจ saturation</b> ตาม datasheet (36,863 / 65,535 counts)</span></li>
     <li><span class="k">3</span><span><b>Auto-range มี hysteresis</b>: 100–2,900 lx อ่านที่ gain 25× เสมอ</span></li>
-    <li><span class="k t">4</span><span><b>เฉลี่ย 5 รอบ</b> ลดผล LED กระพริบ · จอแสดง <b>*</b> เมื่อค่านิ่ง (CV&nbsp;&lt;&nbsp;2%)</span></li>
+    <li><span class="k t">4</span><span><b>เฉลี่ย 5 รอบ</b> ลดผล LED กะพริบ · จอแสดง <b>*</b> เมื่อค่านิ่ง (CV&nbsp;&lt;&nbsp;2%)</span></li>
     <li><span class="k t">5</span><span><b>ชดเชย + traceability</b>: บันทึก Raw/Corrected, gain และรุ่นสมการ</span></li>
   </ul>
   <div class="box teal" style="margin-top:10pt;padding:12pt 18pt">
