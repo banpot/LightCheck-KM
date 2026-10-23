@@ -1,10 +1,10 @@
 {
-  "markdown_docs": 17,
+  "markdown_docs": 19,
   "firmware_loc": 457,
-  "python_tools": 12,
-  "python_loc": 1736,
+  "python_tools": 19,
+  "python_loc": 2544,
   "stl_files": 2,
   "figures_png": 23,
-  "commits": 12,
+  "commits": 14,
   "contributors": 1
 }

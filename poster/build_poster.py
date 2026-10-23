@@ -92,6 +92,7 @@ font-size:17pt;line-height:1.3;white-space:nowrap}}
 /* ---------- columns ---------- */
 .col{{top:438pt;width:630pt;height:2195pt;display:flex;flex-direction:column}}
 .c1{{left:63pt}}.c2{{left:819pt}}.c3{{left:1579pt}}
+.col>*{{flex-shrink:0}}
 h2{{font-family:Kanit;font-weight:600;font-size:56pt;line-height:1.0;text-align:center;letter-spacing:1pt}}
 h2 small{{display:block;font-family:Plex;font-weight:500;font-size:23pt;letter-spacing:0;color:var(--ink2);margin-top:6pt}}
 .rule{{height:7pt;background:var(--rule);margin:12pt 0 18pt}}
@@ -112,11 +113,11 @@ p{{margin:0 0 10pt}}
 .src{{font-size:17pt;color:var(--ink2);line-height:1.35;margin-top:10pt}}
 ol.obj{{list-style:none;counter-reset:o}}
 ol.obj li{{counter-increment:o;position:relative;padding-left:52pt;margin-bottom:6pt;font-size:22pt;line-height:1.36}}
-ol.obj li::before{{content:counter(o);position:absolute;left:0;top:2pt;width:38pt;height:38pt;border-radius:50%;
+ol.obj .num{{position:absolute;left:0;top:2pt;width:38pt;height:38pt;border-radius:50%;
 background:var(--teal);color:#fff;font-family:Kanit;font-weight:600;font-size:23pt;text-align:center;line-height:38pt}}
 .cap{{font-size:17pt;line-height:1.33;color:var(--ink2);margin:4pt 0 4pt}}
 .cap b{{color:var(--ink)}}
-.kmcycle{{width:630pt;height:300pt;display:block;margin:4pt 0}}
+.kmcycle{{width:567pt;height:270pt;display:block;margin:2pt auto}}
 .kmcycle .kl{{font-family:Kanit;font-weight:600;font-size:23pt;fill:var(--ink)}}
 .kmcycle .ks{{font-family:Plex;font-weight:500;font-size:15pt;fill:var(--ink2)}}
 .kmcycle .kn{{font-family:Kanit;font-weight:600;font-size:22pt;fill:#fff}}
@@ -147,8 +148,8 @@ ul.alg li .k{{flex:0 0 36pt;height:36pt;border-radius:9pt;background:var(--blue)
 font-weight:600;font-size:21pt;text-align:center;line-height:36pt;margin-top:2pt}}
 ul.alg li .k.t{{background:var(--teal)}}
 .eq{{font-family:Plex;font-size:23pt}}
-.eqmain{{background:#fff;border:4pt solid var(--teal);border-radius:12pt;padding:12pt 10pt;text-align:center;
-font-family:Kanit;font-weight:500;font-size:46pt;line-height:1.1;color:var(--ink);margin:6pt 0 12pt}}
+.eqmain{{background:#fff;border:4pt solid var(--teal);border-radius:12pt;padding:8pt 10pt;text-align:center;
+font-family:Kanit;font-weight:500;font-size:44pt;line-height:1.1;color:var(--ink);margin:4pt 0 8pt}}
 .eqmain .v{{color:var(--teal);font-weight:600}}
 .frac{{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 4pt}}
 .frac>span:first-child{{border-bottom:2.4pt solid currentColor;padding:0 6pt 2pt}}
@@ -173,17 +174,16 @@ margin:2pt 0 6pt}}
 .sim{{display:inline-block;background:#FFF2C4;color:#6B5200;border-radius:8pt;padding:1pt 10pt;font-size:17pt;font-weight:600}}
 ol.conc{{list-style:none;counter-reset:c}}
 ol.conc li{{counter-increment:c;position:relative;padding-left:46pt;margin-bottom:6pt;font-size:21pt;line-height:1.34}}
-ol.conc li::before{{content:counter(c) ".";position:absolute;left:0;top:0;font-family:Kanit;font-weight:600;font-size:30pt;
+ol.conc .num{{position:absolute;left:0;top:0;font-family:Kanit;font-weight:600;font-size:30pt;line-height:1.34;
 color:var(--blue)}}
 .diss{{display:grid;grid-template-columns:236pt 1fr;gap:16pt;align-items:center}}
 .diss img{{width:236pt;height:236pt;display:block;border-radius:6pt}}
 ol.steps{{list-style:none;counter-reset:st}}
 ol.steps li{{counter-increment:st;position:relative;padding-left:40pt;margin:0 0 7pt;font-size:18.5pt;line-height:1.28}}
-ol.steps li::before{{content:counter(st);position:absolute;left:0;top:1pt;width:30pt;height:30pt;border-radius:50%;
+ol.steps .num{{position:absolute;left:0;top:1pt;width:30pt;height:30pt;border-radius:50%;
 background:var(--teal);color:#fff;font-family:Kanit;font-weight:600;font-size:18pt;text-align:center;line-height:30pt}}
 .url{{font-family:Kanit;font-weight:600;font-size:27pt;color:var(--blue);line-height:1.2}}
 .diss ul{{list-style:none;font-size:19pt;line-height:1.36;margin-top:6pt}}
-.diss li::before{{content:"✓ ";color:var(--teal);font-weight:700}}
 .stats{{display:flex;justify-content:space-between;text-align:center;margin-top:10pt;padding-top:10pt;border-top:2pt solid #fff}}
 .stats .big{{font-size:40pt}}
 .stats .lbl{{font-size:16pt}}
@@ -192,6 +192,10 @@ background:var(--teal);color:#fff;font-family:Kanit;font-weight:600;font-size:18
 .cta{{background:var(--teal);color:#fff;border-radius:12pt;padding:10pt 16pt;font-size:20pt;font-weight:600;line-height:1.3;
 margin-top:10pt;text-align:center}}
 .grow{{flex:1}}
+.fx{{display:grid;grid-template-columns:150pt 1fr;gap:12pt;align-items:center;background:#fff;border-radius:10pt;padding:8pt 12pt;margin-top:8pt}}
+.fxh{{font-family:Kanit;font-weight:600;font-size:18pt;line-height:1.2;color:var(--orange)}}
+.fxe{{font-size:24pt;line-height:1.2}}
+.fxx{{font-size:16.5pt;color:var(--ink2);margin-top:4pt}}
 </style></head><body>
 
 <img class="abs seal" src="assets/su_seal.png" alt="">
@@ -210,10 +214,9 @@ margin-top:10pt;text-align:center}}
 <div class="abs col c1">
   <h2>INTRODUCTION<small>ที่มาและความสำคัญ</small></h2><div class="rule"></div>
   <div class="hook">“รู้สึกว่าพอ” อาจไม่พอ<br>สำหรับสายตาคนทำงานทั้งวัน</div>
-  <p>สายตาปรับตัวกับแสงสลัวได้จนเราไม่ทันสังเกต แต่แสงที่ไม่พอสะสมเป็นความล้าตา ปวดศีรษะ และความผิดพลาดในงาน
-  การดูแลสุขภาวะคนทำงานจึงต้องเริ่มจาก<b>การวัดเป็นตัวเลข</b> ซึ่ง Green Office 2569 ข้อ 5.2.1 ก็กำหนดให้วัดทุกปี
-  ด้วยเครื่องมือมาตรฐานที่สอบเทียบแล้ว ห้ามใช้แอปมือถือ [1] แต่เครื่องมาตรฐานที่ถูกที่สุดที่สำรวจได้ (HIOKI FT3424)
-  ราคา 28,184 บาท รวม VAT จึงมีได้ไม่กี่เครื่อง ขณะที่คนทำงานอยู่ทุกห้อง</p>
+  <p>สายตาปรับตัวกับแสงสลัวจนเราไม่ทันสังเกต แต่แสงที่ไม่พอสะสมเป็นความล้าตา ปวดศีรษะ และงานผิดพลาด
+  จึงต้อง<b>วัดเป็นตัวเลข</b> Green Office 2569 ข้อ 5.2.1 ให้วัดทุกปีด้วยเครื่องที่สอบเทียบแล้ว ห้ามใช้แอปมือถือ [1]
+  แต่เครื่องมาตรฐานที่ถูกที่สุด (HIOKI FT3424) ราคา 28,184 ฿ รวม VAT จึงมีได้ไม่กี่เครื่อง</p>
   <div class="box">
     <div class="crit">
       <div><div class="big">300<span class="unit"> lx</span></div><div class="lbl">ค่าเฉลี่ย<br>พื้นที่สำนักงาน</div></div>
@@ -234,8 +237,8 @@ margin-top:10pt;text-align:center}}
   <div class="cap"><b>ภาพที่ 1</b> วงจร PDCA ของการดูแลแสง ต่อด้วยชั้น KM (ถอดบทเรียน → ใช้ซ้ำ) ทำให้ทุกรอบกลายเป็นความรู้ขององค์กร</div>
   <h3>อุปกรณ์และต้นทุน</h3>
   <div class="comps">
-    <div><img class="ph2" src="assets/photos/tsl2591_crop.jpg" alt=""><div class="nm">TSL2591</div><div class="pr">หัวรับแสง · 200 ฿</div></div>
-    <div><img class="ph2" src="assets/photos/wemos_d1_mini_front_crop.jpg" alt=""><div class="nm">Wemos D1 mini</div><div class="pr">ESP8266 · 89 ฿</div></div>
+    <div><img class="ph2" src="assets/photos/tsl2591_crop.jpg" alt="" data-name="รูป TSL2591"><div class="nm">TSL2591</div><div class="pr">หัวรับแสง · 200 ฿</div></div>
+    <div><img class="ph2" src="assets/photos/wemos_d1_mini_front_crop.jpg" alt="" data-name="รูป Wemos D1 mini"><div class="nm">Wemos D1 mini</div><div class="pr">ESP8266 · 89 ฿</div></div>
     <div><img src="assets/component_lcd1602_front.svg" alt=""><div class="nm">LCD1602 + I²C</div><div class="pr">จอแสดงผล · 70 ฿</div></div>
   </div>
   <div class="credit">ภาพ: Adafruit Industries (CC BY-SA) · Tpkull / Wikimedia Commons (CC BY-SA 4.0)</div>
@@ -248,27 +251,25 @@ margin-top:10pt;text-align:center}}
   </div>
   <div class="box teal" style="margin-top:12pt">
     <div style="display:flex;align-items:center;gap:18pt"><div class="big t" style="font-size:72pt">~73×</div>
-    <div style="font-size:21pt;line-height:1.35">ถูกกว่า แต่<b>ไม่ได้เทียบเท่า</b>เครื่องมาตรฐาน จึงแบ่งบทบาท:
-    ต้นแบบหลายเครื่อง = คัดกรองให้ครอบคลุม · เครื่องมาตรฐาน = ยืนยันผลทางการ</div></div>
+    <div style="font-size:20pt;line-height:1.33">ถูกกว่า แต่<b>ไม่ได้เทียบเท่า</b>: ต้นแบบหลายเครื่อง = คัดกรองให้ทั่ว ·
+    เครื่องมาตรฐาน = ยืนยันผลทางการ</div></div>
   </div>
   <h3>ใครใช้ประโยชน์ได้อย่างไร</h3>
   <div class="two" style="gap:14pt">
     <div class="box tint" style="margin:0;padding:12pt 16pt"><div style="font-family:Kanit;font-weight:600;font-size:21pt;color:var(--teal)">คณะ / ส่วนงาน</div>
-      <div style="font-size:17.5pt;line-height:1.36">ใช้ได้โดยไม่ต้องมีพื้นฐาน: ยืมหรือพิมพ์เครื่อง → สร้างแบบบันทึกอัตโนมัติ → จดค่าเมื่อจอขึ้น * → ส่งเฉพาะจุดเสี่ยงให้ยืนยัน</div></div>
+      <div style="font-size:17pt;line-height:1.33">ไม่ต้องมีพื้นฐาน: ยืมเครื่อง → พิมพ์แบบบันทึก → จดค่าเมื่อจอขึ้น * → ส่งจุดเสี่ยงให้ยืนยัน</div></div>
     <div class="box tint" style="margin:0;padding:12pt 16pt"><div style="font-family:Kanit;font-weight:600;font-size:21pt;color:var(--blue)">เจ้าหน้าที่เทคนิค / นักวิจัย</div>
-      <div style="font-size:17.5pt;line-height:1.36">ต่อยอดได้ทันที: Wi-Fi logging + dashboard, เชื่อมระบบ SU Green Office, เพิ่มเซนเซอร์ อุณหภูมิ/CO₂/เสียง</div></div>
+      <div style="font-size:17pt;line-height:1.33">ต่อยอด: Wi-Fi logging + dashboard, เชื่อม SU Green Office, เพิ่มเซนเซอร์ CO₂/อุณหภูมิ/เสียง</div></div>
   </div>
   <div class="grow"></div>
   <h2 style="margin-top:10pt;font-size:40pt">REFERENCES</h2><div class="rule" style="margin:10pt 0 10pt"></div>
   <div class="refs">
-    <div>1. กรมการเปลี่ยนแปลงสภาพภูมิอากาศฯ. เกณฑ์ Green Office ปี 2569.</div>
-    <div>5. ams. TSL2591 Datasheet DS000338.</div>
-    <div>2. กรมสวัสดิการและคุ้มครองแรงงาน. มาตรฐานความเข้มของแสงสว่าง (2561).</div>
+    <div>1. กรมการเปลี่ยนแปลงสภาพภูมิอากาศฯ. Green Office ปี 2569.</div>
+    <div>4. Adafruit; 5. ams. TSL2591 guide &amp; datasheet.</div>
+    <div>2. กรมสวัสดิการฯ. มาตรฐานความเข้มของแสงสว่าง (2561).</div>
     <div>6. Lorenzo et al. (2022). Sensors 22(19), 7107.</div>
     <div>3. กรมสวัสดิการฯ. หลักเกณฑ์การตรวจวัดแสงสว่าง (2561).</div>
-    <div>7. HIOKI FT3424 สเปกและราคา (Thai Interelectric).</div>
-    <div>4. Adafruit. TSL2591 High Dynamic Range Light Sensor.</div>
-    <div>รายการเต็ม: docs/references.md</div>
+    <div>7. HIOKI FT3424 · รายการเต็ม docs/references.md</div>
   </div>
 </div>
 
@@ -276,15 +277,15 @@ margin-top:10pt;text-align:center}}
 <div class="abs col c2">
   <h2>METHODS<small>แนวคิดและกระบวนการดำเนินงาน</small></h2><div class="rule"></div>
   <img class="wide" src="assets/wiring_diagram.svg" alt="" style="width:596pt;margin:0 auto">
-  <div class="cap"><b>ภาพที่ 2</b> ผังวงจร: บัส I²C ร่วม 2 สาย (SDA = D2, SCL = D1) · TSL2591 0x29 · LCD 0x3F</div>
+  <div class="cap"><b>ภาพที่ 2</b> ผังวงจร: I²C ร่วม 2 สาย (SDA = D2, SCL = D1) · TSL2591 0x29 · LCD 0x3F · ไฟเลี้ยง USB-C 5 V จาก power bank</div>
   <h3>กล่องพิมพ์ 3 มิติ (ไฟล์ STL เปิดให้ดาวน์โหลด)</h3>
   <img class="wide" src="assets/enclosure_hero.png" alt="" style="width:530pt;margin:-4pt auto 0">
   <div class="cap"><b>ภาพที่ 3</b> Render จากไฟล์ STL · 108×63×26 มม. · หัวรับแสงเสมอผิวฝา ไม่มีขอบบังแสง ·
   ช่องน็อต 1/4" ใต้กล่องสำหรับขาตั้งกล้องที่ระดับ 75 ซม.</div>
   <div class="two" style="margin-top:6pt">
-    <div><img src="assets/photos/print_ender6.jpg" alt="" style="width:100%;height:225pt;object-fit:cover;border-radius:14pt;display:block">
+    <div><img src="assets/photos/print_ender6.jpg" alt="" data-name="ภาพที่ 4 พิมพ์กล่อง Ender-6" style="width:100%;height:225pt;object-fit:cover;border-radius:14pt;display:block">
       <div class="cap"><b>ภาพที่ 4</b> พิมพ์กล่องด้วย Creality Ender-6 เส้นใย PLA+ (ภาพจริง)</div></div>
-    <div><div class="ph" style="height:225pt">{CAMERA}<b>ใส่รูป: เครื่องต้นแบบ<br>ที่ประกอบเสร็จ</b></div>
+    <div><div class="ph" style="height:225pt" data-pptx="img" data-photo="1" data-name="ภาพที่ 5 (คลิกขวา > Change Picture เพื่อใส่รูปเครื่องจริง)">{CAMERA}<b>ใส่รูป: เครื่องต้นแบบ<br>ที่ประกอบเสร็จ</b></div>
       <div class="cap"><b>ภาพที่ 5</b> LightCheck KM ที่ประกอบเสร็จ พร้อมใช้งาน</div></div>
   </div>
   <h3>อัลกอริทึมใน firmware v1.1</h3>
@@ -301,18 +302,18 @@ margin-top:10pt;text-align:center}}
       <div class="s">Raw Lux<br><span class="mi">E</span><sub>raw</sub></div><div class="ar">→</div>
       <div class="s">เฉลี่ย 5 ค่า<br><span class="mi">Ē</span><sub>raw</sub></div><div class="ar">→</div>
       <div class="s" style="border-color:var(--teal)">ค่าหลังชดเชย<br><span class="mi">E</span><sub>corr</sub></div></div>
-    <div class="eqmain"><span class="mi">E</span><sub>corrected</sub> = <span class="v mi">a</span> · <span class="mi">Ē</span><sub>raw</sub> + <span class="v mi">b</span></div>
-    <div class="eqrow"><span class="lhs"><span class="mi">E</span><sub>raw</sub> =</span>
+    <div class="eqmain" data-pptx="img" data-name="สมการชดเชย (หลัก)"><span class="mi">E</span><sub>corrected</sub> = <span class="v mi">a</span> · <span class="mi">Ē</span><sub>raw</sub> + <span class="v mi">b</span></div>
+    <div class="eqrow" data-pptx="img" data-name="สมการ Raw lux และ CPL"><span class="lhs"><span class="mi">E</span><sub>raw</sub> =</span>
       <span class="frac"><span>(CH<sub>0</sub> − CH<sub>1</sub>)(1 − CH<sub>1</sub>/CH<sub>0</sub>)</span><span>CPL</span></span>
       <span>, &nbsp;CPL = <span class="frac"><span><span class="mi">t</span><sub>int</sub> · <span class="mi">G</span></span><span>408</span></span></span></div>
-    <div class="eqrow"><span class="lhs"><span class="mi">a</span> =</span>
+    <div class="eqrow" data-pptx="img" data-name="สมการ a และ b (least squares)"><span class="lhs"><span class="mi">a</span> =</span>
       <span class="frac"><span>Σ(<span class="mi">x<sub>i</sub></span> − <span class="mi">x̄</span>)(<span class="mi">y<sub>i</sub></span> − <span class="mi">ȳ</span>)</span><span>Σ(<span class="mi">x<sub>i</sub></span> − <span class="mi">x̄</span>)²</span></span>
       <span>, &nbsp;<span class="mi">b</span> = <span class="mi">ȳ</span> − <span class="mi">a</span><span class="mi">x̄</span></span></div>
     <div class="ex"><span class="mi">x</span> = Raw ของต้นแบบ, <span class="mi">y</span> = ค่าจากเครื่องอ้างอิงที่มีใบสอบเทียบ (least squares บนชุด fit;
     วัดความแม่นยำบนชุด validation คนละ session) · <span class="mi">t</span><sub>int</sub> = 300 ms · <span class="mi">G</span> = 25</div>
     <div class="ex" style="margin-top:8pt"><span class="sim">ตัวอย่างผลจำลอง</span> <span class="mi">a</span> = {a_ex:.3f},
     <span class="mi">b</span> = {'−' if b_ex < 0 else ''}{abs(b_ex):.1f} lx: Raw {raw_ex:.0f} lx ⇒ <span class="mi">E</span><sub>corr</sub> = {a_ex:.3f}×{raw_ex:.0f} {'−' if b_ex < 0 else '+'} {abs(b_ex):.1f}
-    = <b>{cor_ex:.1f} lx</b> อยู่ในช่วงยืนยันของเกณฑ์ 400 lx ({400*(1-u95/100):.0f}–{400*(1+u95/100):.0f} lx) จึงวัดซ้ำด้วยเครื่องมาตรฐาน</div>
+    = <b>{cor_ex:.1f} lx</b> อยู่ในช่วงยืนยันของเกณฑ์ 400 lx ({400*(1-u95/100):.0f}–{400*(1+u95/100):.0f} lx) → วัดซ้ำด้วยเครื่องมาตรฐาน</div>
   </div>
 </div>
 
@@ -330,22 +331,34 @@ margin-top:10pt;text-align:center}}
     <div class="kpi"><div><span class="from">41</span><span class="arrow"> → </span><span class="big">0</span></div>
       <div class="lbl">ระดับแสงที่ auto-range แกว่งจน SATURATED (firmware v1.0 → v1.1, ทดสอบ 521 ระดับ)</div></div>
   </div>
-  <img class="wide" src="assets/fig_cal_scatter_poster.svg" alt="" style="width:520pt;margin:2pt auto 0">
+  <img class="wide" src="assets/fig_cal_scatter_poster.svg" alt="" style="width:470pt;margin:2pt auto 0">
   <div class="cap"><b>ภาพที่ 6</b> ต้นแบบเทียบเครื่องอ้างอิง: ก่อนชดเชยอ่านต่ำกว่าจริงราว 1/3 (ประมาณจาก datasheet) หลังชดเชยเข้าใกล้ y = x</div>
-  <img class="wide" src="assets/office_twin_poster.svg" alt="" style="width:440pt;margin:2pt auto 0">
-  <div class="cap"><b>ภาพที่ 7</b> Digital twin ห้องตัวอย่าง 8×6 ม. (จำลองด้วยฟิสิกส์ของแสง): โคมเสีย 1 ดวง + โคมเสื่อม → ตรวจพบ
-  → เปลี่ยน/ทำความสะอาดโคม + task light → ตรวจซ้ำผ่าน</div>
+  <div class="box orange" style="margin-top:8pt;padding:14pt 18pt">
+    <div style="display:flex;align-items:center;gap:16pt">
+      <div><span class="pill t" style="font-size:18pt">ผลการใช้งานจริง</span>
+        <div class="big o" style="font-size:56pt;line-height:1.05;margin-top:4pt;white-space:nowrap">10–30%</div></div>
+      <div style="font-size:20.5pt;line-height:1.36">ห้องทำงาน<b>เกือบทุกห้อง</b>ของสำนักดิจิทัลเทคโนโลยี (ยกเว้นห้องประชุม)
+      มีแสง<b>ต่ำกว่าระดับมาตรฐาน</b> → ผู้บริหารวางแผนปรับปรุงทันที</div>
+    </div>
+    <div class="fx"><div class="fxh">ขาดเล็กน้อย<br>เปลี่ยนหลอด LED<br>วัตต์สูงขึ้น</div>
+      <div class="fxe"><span data-pptx="img" data-name="สูตรเปลี่ยนวัตต์หลอด" style="display:inline-block"><span class="mi">P</span><sub>ใหม่</sub> = <span class="mi">P</span><sub>เดิม</sub> × <span class="frac"><span><span class="mi">E</span><sub>เป้าหมาย</sub></span><span><span class="mi">E</span><sub>วัดได้</sub></span></span></span>
+      <div class="fxx">เช่น วัดได้ 270 lx: 18 W → 22 W</div></div></div>
+    <div class="fx"><div class="fxh">ขาดมาก<br>ติดหลอดไฟเพิ่ม</div>
+      <div class="fxe"><span data-pptx="img" data-name="สูตรเพิ่มจำนวนหลอด" style="display:inline-block"><span class="mi">N</span><sub>ใหม่</sub> = ⌈<span class="mi">N</span><sub>เดิม</sub> × <span class="frac"><span><span class="mi">E</span><sub>เป้าหมาย</sub></span><span><span class="mi">E</span><sub>วัดได้</sub></span></span>⌉</span>
+      <div class="fxx">เช่น วัดได้ 220 lx, 6 ดวง → 9 ดวง</div></div></div>
+    <div class="src" style="margin-top:6pt">Lumen method: E = NΦ·UF·MF/A ⇒ E ∝ NΦ · เป้าหมาย = เกณฑ์ × (1 + U<sub>95</sub>) ·
+    ยืนยันด้วยเครื่องมาตรฐานก่อนจัดซื้อ</div>
+  </div>
   <h2 style="margin-top:10pt">CONCLUSIONS<small>สรุปและบทเรียน</small></h2><div class="rule"></div>
   <ol class="conc">
-    <li>เครื่องราว 385 บาท + กติกา <b>guard band</b> ทำให้คัดกรองได้ครอบคลุม โดยผลทางการยังยืนยันด้วยเครื่องมาตรฐาน</li>
-    <li><b>ปัญหาที่พบหน้างาน</b>: แสง LED ไม่เหมือนแสงธรรมชาติ และกระพริบ 100 Hz ตามไฟ 50 Hz →
-    integration 300 ms (= 30 รอบพอดี) + เฉลี่ย 5 ค่า ลดการแกว่ง ~2.3 เท่า</li>
-    <li>ความรู้กลายเป็นโค้ด SOP คู่มือ และ STL ที่ทำซ้ำได้โดยไม่ต้องพึ่งผู้พัฒนา</li>
+    <li><b>ใช้ได้จริง</b>: เครื่องละ ~385 ฿ คัดกรองพบห้องแสงไม่พอ → แผนปรับปรุงของผู้บริหาร</li>
+    <li><b>บทเรียนหน้างาน</b>: LED กระพริบ 100 Hz → เฉลี่ย 5 ค่า ค่านิ่งขึ้น ~2.3 เท่า</li>
+    <li>ความรู้เป็นโค้ด SOP คู่มือ STL ที่ทำซ้ำได้โดยไม่ต้องพึ่งผู้พัฒนา</li>
   </ol>
   <div class="box" style="padding:16pt 20pt">
     <div style="font-family:Kanit;font-weight:600;font-size:30pt;line-height:1.15;color:var(--ink)">เผยแพร่แล้ว · สแกนเพื่อนำไปใช้</div>
-    <div class="url" style="margin:2pt 0 10pt">github.com/banpot/LightCheck-KM</div>
-    <div class="diss"><img src="assets/qr_repo.svg" alt="">
+    <div class="url" style="margin:2pt 0 10pt" data-link="https://github.com/banpot/LightCheck-KM">github.com/banpot/LightCheck-KM</div>
+    <div class="diss"><img src="assets/qr_repo.svg" alt="" data-name="QR GitHub" data-link="https://github.com/banpot/LightCheck-KM">
       <ol class="steps">
         <li>สแกน QR → คู่มือไทย, firmware, ไฟล์ STL</li>
         <li>ซื้ออุปกรณ์ ≈ 359 ฿ + พิมพ์กล่อง PLA+ ≈ 54 g</li>
@@ -378,5 +391,21 @@ window.layoutReport = () => [...document.querySelectorAll('.col')].map(c => {{
 </script>
 </body></html>
 """
+import re
+
+
+def number_lists(doc):
+    """Write list numbers as real spans (editable in PowerPoint) instead of CSS counters."""
+    def fix(m):
+        cls, body = m.group(1), m.group(2)
+        k = [0]
+        def li(_):
+            k[0] += 1
+            return f'<li><span class="num">{k[0]}{"." if cls == "conc" else ""}</span>'
+        return f'<ol class="{cls}">' + re.sub(r"<li>", li, body) + "</ol>"
+    return re.sub(r'<ol class="(obj|conc|steps)">(.*?)</ol>', fix, doc, flags=re.S)
+
+
+html = number_lists(html)
 open(os.path.join(HERE, "poster.html"), "w", encoding="utf-8").write(html)
 print("poster.html written", len(html))

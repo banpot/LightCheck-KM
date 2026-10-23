@@ -11,7 +11,7 @@
 | Wemos D1 mini (ESP8266) | 1 | ไมโครคอนโทรลเลอร์ + Wi-Fi |
 | LCD1602 + I2C backpack (PCF8574) | 1 | ส่วนใหญ่ใช้ address 0x3F หรือ 0x27 |
 | สาย jumper / สายไฟ 26 AWG | ~10 เส้น | |
-| สาย Micro-USB + power bank | 1 | ใช้เป็นแหล่งจ่ายไฟภาคสนาม |
+| สาย USB-C + power bank (หรืออะแดปเตอร์มือถือ 5 V) | 1 | แหล่งจ่ายไฟภาคสนาม (บอร์ดรุ่น micro-USB ใช้สาย micro-USB) |
 | กล่องพิมพ์ 3 มิติ (base + lid) | 1 ชุด | ไฟล์ STL ใน `hardware/enclosure/stl/` |
 | สกรู M3, น็อต 1/4"-20 (ถ้าจะใช้ขาตั้งกล้อง) | ตาม BOM | ดู `hardware/enclosure/README.md` |
 
