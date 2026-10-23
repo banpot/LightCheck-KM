@@ -73,7 +73,7 @@ html,body{{width:2268pt;height:2835pt;background:#fff;color:var(--ink);font-fami
 body{{position:relative;overflow:hidden;font-size:23pt;line-height:1.4}}
 .abs{{position:absolute}}
 /* ---------- header (template) ---------- */
-.seal{{left:57pt;top:36pt;width:332pt;height:332pt}}
+.seal{{left:74pt;top:53pt;width:299pt;height:299pt}}
 .title{{left:420pt;width:1428pt;top:30pt;text-align:center}}
 .t1{{font-family:Kanit;font-weight:600;font-size:104pt;line-height:1.05;letter-spacing:-0.5pt}}
 .t1 .km{{color:var(--teal)}}
@@ -81,7 +81,7 @@ body{{position:relative;overflow:hidden;font-size:23pt;line-height:1.4}}
 .t3{{font-family:Plex;font-weight:600;font-size:36pt;margin-top:14pt;color:#2b2b2b}}
 .t4{{font-family:Plex;font-weight:500;font-size:28pt;color:#3d3d3d;margin-top:0pt}}
 .logo{{left:1870pt;top:70pt;width:345pt}}
-.tag{{left:1870pt;top:250pt;width:345pt;text-align:center}}
+.tag{{left:1862pt;top:270pt;width:360pt;text-align:center}}
 .pill{{display:inline-block;background:var(--blue);color:#fff;border-radius:40pt;padding:5pt 16pt;font-weight:600;
 font-size:17pt;line-height:1.3;white-space:nowrap}}
 .pill.t{{background:var(--teal)}}
@@ -125,6 +125,8 @@ background:var(--teal);color:#fff;font-family:Kanit;font-weight:600;font-size:23
 .kmcycle .kc3{{font-family:Plex;font-weight:500;font-size:14.5pt;fill:var(--ink2)}}
 .comps{{display:grid;grid-template-columns:1fr 0.82fr 1.35fr;gap:12pt;align-items:end;text-align:center}}
 .comps img{{width:100%;display:block;margin:0 auto 6pt}}
+.comps img.ph2{{border-radius:10pt;height:150pt;object-fit:cover}}
+.credit{{font-size:13pt;color:var(--ink2);margin-top:4pt;text-align:right}}
 .comps .nm{{font-family:Kanit;font-weight:600;font-size:21pt;line-height:1.15}}
 .comps .pr{{font-size:19pt;color:var(--ink2)}}
 .cost{{margin-top:12pt}}
@@ -161,21 +163,25 @@ margin:2pt 0 6pt}}
 .chain .ar{{color:var(--blue);font-weight:700;font-size:22pt}}
 .ex{{font-size:19.5pt;line-height:1.35;color:var(--ink);margin-top:6pt}}
 .kpis{{display:grid;grid-template-columns:1fr 1fr;gap:14pt;margin:6pt 0 8pt}}
-.kpi{{background:var(--tint);border-radius:14pt;padding:14pt 16pt 12pt;border-top:8pt solid var(--blue)}}
+.kpi{{background:var(--tint);border-radius:14pt;padding:10pt 14pt 10pt;border-top:8pt solid var(--blue)}}
 .kpi.t{{border-top-color:var(--teal)}}.kpi.o{{border-top-color:var(--orange)}}
-.kpi .big{{font-size:58pt}}
+.kpi .big{{font-size:54pt}}
 .kpi .arrow{{font-size:34pt;color:var(--ink2);font-family:Kanit;font-weight:500}}
 .kpi .from{{font-family:Kanit;font-weight:600;font-size:40pt;color:var(--ink2)}}
-.kpi .lbl{{font-size:18.5pt;margin-top:4pt}}
+.kpi .lbl{{font-size:17pt;margin-top:2pt;line-height:1.28}}
 .lead{{font-size:20.5pt;line-height:1.36}}
 .sim{{display:inline-block;background:#FFF2C4;color:#6B5200;border-radius:8pt;padding:1pt 10pt;font-size:17pt;font-weight:600}}
 ol.conc{{list-style:none;counter-reset:c}}
 ol.conc li{{counter-increment:c;position:relative;padding-left:46pt;margin-bottom:6pt;font-size:21pt;line-height:1.34}}
 ol.conc li::before{{content:counter(c) ".";position:absolute;left:0;top:0;font-family:Kanit;font-weight:600;font-size:30pt;
 color:var(--blue)}}
-.diss{{display:grid;grid-template-columns:190pt 1fr;gap:16pt;align-items:center}}
-.diss img{{width:190pt;height:190pt;display:block;border-radius:6pt}}
-.diss .url{{font-family:Kanit;font-weight:600;font-size:23pt;color:var(--blue);line-height:1.2;word-break:break-all}}
+.diss{{display:grid;grid-template-columns:236pt 1fr;gap:16pt;align-items:center}}
+.diss img{{width:236pt;height:236pt;display:block;border-radius:6pt}}
+ol.steps{{list-style:none;counter-reset:st}}
+ol.steps li{{counter-increment:st;position:relative;padding-left:40pt;margin:0 0 7pt;font-size:18.5pt;line-height:1.28}}
+ol.steps li::before{{content:counter(st);position:absolute;left:0;top:1pt;width:30pt;height:30pt;border-radius:50%;
+background:var(--teal);color:#fff;font-family:Kanit;font-weight:600;font-size:18pt;text-align:center;line-height:30pt}}
+.url{{font-family:Kanit;font-weight:600;font-size:27pt;color:var(--blue);line-height:1.2}}
 .diss ul{{list-style:none;font-size:19pt;line-height:1.36;margin-top:6pt}}
 .diss li::before{{content:"✓ ";color:var(--teal);font-weight:700}}
 .stats{{display:flex;justify-content:space-between;text-align:center;margin-top:10pt;padding-top:10pt;border-top:2pt solid #fff}}
@@ -195,7 +201,7 @@ margin-top:10pt;text-align:center}}
   <div class="t3">ว่าที่ ร.ต. ดร. บรรพต ดลวิทยากุล</div>
   <div class="t4">ฝ่ายบริหารและพัฒนาดิจิทัลเทคโนโลยี สำนักดิจิทัลเทคโนโลยี มหาวิทยาลัยศิลปากร</div>
 </div>
-<img class="abs logo" src="assets/bdt_logo_stacked.svg" alt="" style="width:205pt;left:1940pt;top:44pt">
+<img class="abs logo" src="assets/bdt_logo_stacked.svg" alt="" style="width:236pt;left:1924pt;top:30pt">
 <div class="abs tag"><span class="pill">KM · ด้านการบริหารจัดการและสร้างนวัตกรรม</span></div>
 <div class="abs bar"></div>
 <div class="abs vdiv" style="left:755pt"></div><div class="abs vdiv" style="left:1511pt"></div>
@@ -227,18 +233,19 @@ margin-top:10pt;text-align:center}}
   <div class="cap"><b>ภาพที่ 1</b> วงจร KM ของโครงการ: ข้อมูลหน้างานกลายเป็นความรู้ที่ใช้ซ้ำได้ และให้การปรับปรุงเกิดจากหลักฐาน</div>
   <h3>อุปกรณ์และต้นทุน</h3>
   <div class="comps">
-    <div><img src="assets/component_tsl2591.svg" alt=""><div class="nm">TSL2591</div><div class="pr">หัวรับแสง · 226 ฿</div></div>
-    <div><img src="assets/component_d1mini.svg" alt="" style="width:78%"><div class="nm">Wemos D1 mini</div><div class="pr">ESP8266 · 97 ฿</div></div>
-    <div><img src="assets/component_lcd1602_front.svg" alt=""><div class="nm">LCD1602 + I²C</div><div class="pr">จอแสดงผล · 65 ฿</div></div>
+    <div><img class="ph2" src="assets/photos/tsl2591_crop.jpg" alt=""><div class="nm">TSL2591</div><div class="pr">หัวรับแสง · 200 ฿</div></div>
+    <div><img class="ph2" src="assets/photos/wemos_d1_mini_front_crop.jpg" alt=""><div class="nm">Wemos D1 mini</div><div class="pr">ESP8266 · 89 ฿</div></div>
+    <div><img src="assets/component_lcd1602_front.svg" alt=""><div class="nm">LCD1602 + I²C</div><div class="pr">จอแสดงผล · 70 ฿</div></div>
   </div>
+  <div class="credit">ภาพ: Adafruit Industries (CC BY-SA) · Tpkull / Wikimedia Commons (CC BY-SA 4.0)</div>
   <div class="cost">
-    <div class="row"><div class="nm">LightCheck KM<br><span style="font-weight:400;color:var(--ink2)">รวมกล่อง+สาย</span></div>
-      <div class="tr"><div class="b" style="width:2.4%;background:var(--teal)"></div></div><div class="v" style="position:absolute;left:250pt">≈ 550–700 ฿</div></div>
+    <div class="row"><div class="nm">LightCheck KM<br><span style="font-weight:400;color:var(--ink2)">ต้นทุนจริง</span></div>
+      <div class="tr"><div class="b" style="width:1.5%;background:var(--teal)"></div></div><div class="v" style="position:absolute;left:250pt">≈ 385 ฿ <span style="font-weight:400;color:var(--ink2);font-size:16pt">(89 + 200 + 70 + PLA+ 54 g ≈ 26)</span></div></div>
     <div class="row"><div class="nm">Hioki FT3424<br><span style="font-weight:400;color:var(--ink2)">เครื่องมาตรฐาน</span></div>
       <div class="tr"><div class="b" style="width:100%;background:var(--blue)"></div></div><div class="v">26,340 ฿</div></div>
   </div>
   <div class="box teal" style="margin-top:12pt">
-    <div style="display:flex;align-items:center;gap:18pt"><div class="big t" style="font-size:72pt">~40×</div>
+    <div style="display:flex;align-items:center;gap:18pt"><div class="big t" style="font-size:72pt">~68×</div>
     <div style="font-size:21pt;line-height:1.35">ถูกกว่า แต่<b>ไม่ได้เทียบเท่า</b>เครื่องมาตรฐาน จึงแบ่งบทบาท:
     ต้นแบบหลายเครื่อง = คัดกรองให้ครอบคลุม · เครื่องมาตรฐาน = ยืนยันผลทางการ</div></div>
   </div>
@@ -273,8 +280,8 @@ margin-top:10pt;text-align:center}}
   <div class="cap"><b>ภาพที่ 3</b> Render จากไฟล์ STL · 108×63×26 มม. · หัวรับแสงเสมอผิวฝา ไม่มีขอบบังแสง ·
   ช่องน็อต 1/4" ใต้กล่องสำหรับขาตั้งกล้องที่ระดับ 75 ซม.</div>
   <div class="two" style="margin-top:6pt">
-    <div><div class="ph" style="height:225pt">{CAMERA}<b>ใส่รูป: เครื่องพิมพ์ 3 มิติ<br>ขณะพิมพ์กล่อง</b></div>
-      <div class="cap"><b>ภาพที่ 4</b> การพิมพ์กล่อง PLA 0.2 มม. ไม่ต้องใช้ support</div></div>
+    <div><img src="assets/photos/print_ender6.jpg" alt="" style="width:100%;height:225pt;object-fit:cover;border-radius:14pt;display:block">
+      <div class="cap"><b>ภาพที่ 4</b> พิมพ์กล่องด้วย Creality Ender-6 เส้นใย PLA+ (ภาพจริง)</div></div>
     <div><div class="ph" style="height:225pt">{CAMERA}<b>ใส่รูป: เครื่องต้นแบบ<br>ที่ประกอบเสร็จ</b></div>
       <div class="cap"><b>ภาพที่ 5</b> LightCheck KM ที่ประกอบเสร็จ พร้อมใช้งาน</div></div>
   </div>
@@ -311,8 +318,7 @@ margin-top:10pt;text-align:center}}
 <div class="abs col c3">
   <h2>RESULTS<small>ผลลัพธ์จากการจัดการความรู้</small></h2><div class="rule"></div>
   <div class="lead">ยังไม่มีข้อมูลวัดคู่จริง จึงประเมินด้วย<b>วิธีเชิงอัลกอริทึม</b>: Monte Carlo {S['n_campaigns']:,} รอบ
-  จากสเปก datasheet TSL2591 และเครื่องอ้างอิง Hioki FT3424 (±2% rdg.) ด้วยโค้ดชุดเดียวกับที่จะใช้กับข้อมูลจริง
-  <span class="sim">ผลจำลอง</span></div>
+  จาก datasheet TSL2591 + สเปก Hioki FT3424 (±2% rdg.) <span class="sim">ผลจำลอง</span></div>
   <div class="kpis">
     <div class="kpi t"><div class="big t">±{u95:.1f}%</div><div class="lbl">ความคลาดเคลื่อนที่คาดหวัง (95%) หลังชดเชย เทียบค่าจริง</div></div>
     <div class="kpi"><div><span class="from">{mape_raw:.0f}%</span><span class="arrow"> → </span><span class="big">{mape_cor:.1f}%</span></div>
@@ -322,30 +328,34 @@ margin-top:10pt;text-align:center}}
     <div class="kpi"><div><span class="from">41</span><span class="arrow"> → </span><span class="big">0</span></div>
       <div class="lbl">ระดับแสงที่ auto-range แกว่งจน SATURATED (firmware v1.0 → v1.1, ทดสอบ 521 ระดับ)</div></div>
   </div>
-  <img class="wide" src="assets/fig_cal_scatter_poster.svg" alt="" style="width:540pt;margin:2pt auto 0">
-  <div class="cap"><b>ภาพที่ 6</b> ค่าที่ต้นแบบแสดงเทียบเครื่องอ้างอิงมาตรฐาน: ก่อนชดเชยอ่านต่ำกว่าจริงราว 1/3
-  (ประมาณจาก datasheet) หลังชดเชยเข้าใกล้เส้น y = x</div>
-  <img class="wide" src="assets/office_twin_poster.svg" alt="" style="width:520pt;margin:4pt auto 0">
+  <img class="wide" src="assets/fig_cal_scatter_poster.svg" alt="" style="width:520pt;margin:2pt auto 0">
+  <div class="cap"><b>ภาพที่ 6</b> ต้นแบบเทียบเครื่องอ้างอิง: ก่อนชดเชยอ่านต่ำกว่าจริงราว 1/3 (ประมาณจาก datasheet) หลังชดเชยเข้าใกล้ y = x</div>
+  <img class="wide" src="assets/office_twin_poster.svg" alt="" style="width:440pt;margin:2pt auto 0">
   <div class="cap"><b>ภาพที่ 7</b> Digital twin ห้องตัวอย่าง 8×6 ม. (จำลองด้วยฟิสิกส์ของแสง): โคมเสีย 1 ดวง + โคมเสื่อม → ตรวจพบ
   → เปลี่ยน/ทำความสะอาดโคม + task light → ตรวจซ้ำผ่าน</div>
-  <h2 style="margin-top:18pt">CONCLUSIONS<small>สรุปและบทเรียน</small></h2><div class="rule"></div>
+  <h2 style="margin-top:10pt">CONCLUSIONS<small>สรุปและบทเรียน</small></h2><div class="rule"></div>
   <ol class="conc">
-    <li>เครื่องราว 600 บาท + กติกา <b>guard band</b> ทำให้คัดกรองได้ครอบคลุม โดยผลทางการยังยืนยันด้วยเครื่องมาตรฐาน</li>
-    <li><b>ปัญหาที่พบหน้างาน</b>: แสง LED ไม่เหมือนแสงธรรมชาติ และกระพริบ 100 Hz ตามไฟ 50 Hz ค่าไม่นิ่ง →
+    <li>เครื่องราว 385 บาท + กติกา <b>guard band</b> ทำให้คัดกรองได้ครอบคลุม โดยผลทางการยังยืนยันด้วยเครื่องมาตรฐาน</li>
+    <li><b>ปัญหาที่พบหน้างาน</b>: แสง LED ไม่เหมือนแสงธรรมชาติ และกระพริบ 100 Hz ตามไฟ 50 Hz →
     integration 300 ms (= 30 รอบพอดี) + เฉลี่ย 5 ค่า ลดการแกว่ง ~2.3 เท่า</li>
-    <li>ความรู้ถูกแปลงเป็นโค้ด SOP คู่มือ STL และเครื่องมือคำนวณ ที่คนอื่นทำซ้ำได้โดยไม่ต้องพึ่งผู้พัฒนา</li>
+    <li>ความรู้กลายเป็นโค้ด SOP คู่มือ และ STL ที่ทำซ้ำได้โดยไม่ต้องพึ่งผู้พัฒนา</li>
   </ol>
-  <div class="box">
+  <div class="box" style="padding:16pt 20pt">
+    <div style="font-family:Kanit;font-weight:600;font-size:30pt;line-height:1.15;color:var(--ink)">เผยแพร่แล้ว · สแกนเพื่อนำไปใช้</div>
+    <div class="url" style="margin:2pt 0 10pt">github.com/banpot/LightCheck-KM</div>
     <div class="diss"><img src="assets/qr_repo.svg" alt="">
-      <div><div style="font-family:Kanit;font-weight:600;font-size:26pt;line-height:1.2">เผยแพร่ภายในมหาวิทยาลัยแล้ว</div>
-      <div class="url">github.com/banpot/LightCheck-KM</div>
-      <ul><li>Public repository · คู่มือภาษาไทย · SOP</li><li>ไฟล์ STL กล่อง พร้อมพิมพ์</li>
-      <li>Light Survey Package ให้ส่วนงานอื่น</li><li>ถาม-ตอบผ่าน Issues</li></ul></div></div>
+      <ol class="steps">
+        <li>สแกน QR → คู่มือไทย, firmware, ไฟล์ STL</li>
+        <li>ซื้ออุปกรณ์ ≈ 359 ฿ + พิมพ์กล่อง PLA+ ≈ 54 g</li>
+        <li>ต่อสาย 8 เส้นตามผัง + อัปโหลด firmware</li>
+        <li>สอบเทียบกับ lux meter มาตรฐาน 1 ครั้ง</li>
+        <li>วัดตาม SOP: จดค่าเมื่อจอขึ้น * จุดใกล้เกณฑ์ส่งยืนยัน</li>
+      </ol></div>
     <div class="stats">
       <div><div class="big">{STATS['markdown_docs']}</div><div class="lbl">เอกสาร/คู่มือ</div></div>
       <div><div class="big">{STATS['stl_files']}</div><div class="lbl">ไฟล์ STL</div></div>
       <div><div class="big">{STATS['python_tools']}</div><div class="lbl">เครื่องมือ Python</div></div>
-      <div><div class="big">v1.1</div><div class="lbl">firmware ล่าสุด</div></div>
+      <div><div class="big" style="font-size:30pt;line-height:1.33">Public</div><div class="lbl">MIT / CC BY 4.0</div></div>
     </div>
   </div>
 </div>

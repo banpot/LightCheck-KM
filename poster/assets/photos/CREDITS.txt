@@ -1,0 +1,4 @@
+adafruit_tsl2591_1980_*.jpg — product photos from github.com/adafruit/Adafruit-TSL2591-Breakout-PCB (assets/),
+Adafruit Industries, Creative Commons Attribution/Share-Alike. Credit "ภาพ: Adafruit Industries (CC BY-SA)" if used.
+wemos_d1_mini_front_Tpkull_CCBYSA4.jpg — "WeMos D1 Mini front" by Tpkull, Wikimedia Commons,
+https://commons.wikimedia.org/wiki/File:WeMos_D1_Mini_front.jpg — CC BY-SA 4.0. Credit "ภาพ: Tpkull / Wikimedia Commons (CC BY-SA 4.0)".

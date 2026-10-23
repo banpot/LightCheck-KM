@@ -19,7 +19,7 @@
 และจุดต่ำสุด ≥ 150 lux ส่วนงานประจำ ณ จุดทำงานใช้ 400–500 lux [2] เครื่องมาตรฐานราคาราว 26,000 บาท
 หน่วยงานจึงมีได้ไม่กี่เครื่อง ขณะที่ต้องวัดทุกห้องอย่างน้อยปีละครั้ง [1][3]
 
-LightCheck KM ใช้ **TSL2591 + Wemos D1 mini + LCD1602** ราคาราว 550–700 บาท ทำ pre-survey ได้หลายจุดพร้อมกัน
+LightCheck KM ใช้ **TSL2591 + Wemos D1 mini + LCD1602** ต้นทุนจริงราว **385 บาท** (MCU 89 + sensor 200 + LCD 70 + กล่อง PLA+ ≈ 26 บาท; ถูกกว่าเครื่องมาตรฐาน ~68 เท่า) ทำ pre-survey ได้หลายจุดพร้อมกัน
 แล้วส่งเฉพาะจุดเสี่ยงไปยืนยันด้วยเครื่องมาตรฐาน หัวใจของผลงานคือการเปลี่ยนข้อมูลหน้างานให้เป็น
 **ความรู้ขององค์กร** ที่ตรวจสอบย้อนกลับได้และใช้ซ้ำได้
 
@@ -107,7 +107,7 @@ Code: MIT · Docs, figures and hardware files: CC BY 4.0 · ดู [LICENSE](LIC
 
 ### English summary
 
-LightCheck KM is a ~฿600 office illuminance **pre-survey** instrument (TSL2591 + ESP8266 + LCD1602) and the
+LightCheck KM is a ~฿385 office illuminance **pre-survey** instrument (TSL2591 + ESP8266 + LCD1602) and the
 knowledge system around it: firmware with auditable raw/corrected logging, a parametric 3D-printed enclosure,
 an SOP with a guard-band decision rule, calibration tooling and Thai documentation. Official Green Office
 evidence is always confirmed with a calibrated, standards-compliant lux meter. All accuracy figures in this
