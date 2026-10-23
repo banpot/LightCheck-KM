@@ -25,8 +25,8 @@ def km_cycle_svg():
     W, H, w, h = 630, 300, 178, 84
     top = [(97, 64), (315, 64), (533, 64)]
     bot = [(533, 236), (315, 236), (97, 236)]
-    nodes = [("ตรวจวัด", "pre-survey"), ("วิเคราะห์", "เทียบเกณฑ์"), ("ปรับปรุง", "แก้ตามสาเหตุ"),
-             ("ตรวจซ้ำ", "เครื่องมาตรฐาน"), ("ถอดบทเรียน", "lessons learned"), ("ใช้ซ้ำ", "public repo")]
+    nodes = [("วางแผน", "P · เกณฑ์ + จุดวัด"), ("ตรวจวัด", "D · pre-survey"), ("ตรวจสอบ", "C · ยืนยันผล"),
+             ("ปรับปรุง", "A · แก้ + ตรวจซ้ำ"), ("ถอดบทเรียน", "KM · บทเรียน"), ("ใช้ซ้ำ", "KM · public repo")]
     pos = top + bot
     o = [f'<svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg" class="kmcycle">',
          '<defs><marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">'
@@ -44,7 +44,7 @@ def km_cycle_svg():
                  f'<text x="{-w/2 + 6}" y="{-h/2 + 14}" text-anchor="middle" class="kn">{k + 1}</text>'
                  f'<text x="6" y="0" text-anchor="middle" class="kl">{lab}</text><text x="6" y="26" text-anchor="middle" class="ks">{sub}</text></g>')
     o.append('<text x="315" y="146" text-anchor="middle" class="kc1">LightCheck KM</text>'
-             '<text x="315" y="176" text-anchor="middle" class="kc2">Tacit → Explicit Knowledge</text>')
+             '<text x="315" y="176" text-anchor="middle" class="kc2">PDCA + Tacit → Explicit</text>')
     o.append('</svg>')
     return "".join(o)
 
@@ -209,28 +209,29 @@ margin-top:10pt;text-align:center}}
 <!-- ================= COLUMN 1 ================= -->
 <div class="abs col c1">
   <h2>INTRODUCTION<small>ที่มาและความสำคัญ</small></h2><div class="rule"></div>
-  <div class="hook">“แสงที่รู้สึกว่าพอ”<br>ยืนยันไม่ได้ว่าผ่านเกณฑ์</div>
-  <p>Green Office ปี 2569 หมวด 5.2.1 กำหนดให้ตรวจวัดแสงทุกปี ทั้งจุดทำงานและพื้นที่ทำงาน ด้วยเครื่องมือ
-  ได้มาตรฐานที่สอบเทียบแล้ว และ<b>ห้ามใช้แอปมือถือเป็นหลักฐาน</b> [1] แต่ lux meter มาตรฐานราคาราว 26,000 บาท
-  หน่วยงานจึงมีได้ไม่กี่เครื่อง ขณะที่ต้องสำรวจทุกห้อง</p>
+  <div class="hook">“รู้สึกว่าพอ” อาจไม่พอ<br>สำหรับสายตาคนทำงานทั้งวัน</div>
+  <p>สายตาปรับตัวกับแสงสลัวได้จนเราไม่ทันสังเกต แต่แสงที่ไม่พอสะสมเป็นความล้าตา ปวดศีรษะ และความผิดพลาดในงาน
+  การดูแลสุขภาวะคนทำงานจึงต้องเริ่มจาก<b>การวัดเป็นตัวเลข</b> ซึ่ง Green Office 2569 ข้อ 5.2.1 ก็กำหนดให้วัดทุกปี
+  ด้วยเครื่องมือมาตรฐานที่สอบเทียบแล้ว ห้ามใช้แอปมือถือ [1] แต่เครื่องมาตรฐานที่ถูกที่สุดที่สำรวจได้ (HIOKI FT3424)
+  ราคา 28,184 บาท รวม VAT จึงมีได้ไม่กี่เครื่อง ขณะที่คนทำงานอยู่ทุกห้อง</p>
   <div class="box">
     <div class="crit">
       <div><div class="big">300<span class="unit"> lx</span></div><div class="lbl">ค่าเฉลี่ย<br>พื้นที่สำนักงาน</div></div>
       <div><div class="big">150<span class="unit"> lx</span></div><div class="lbl">จุดต่ำสุด<br>ของพื้นที่</div></div>
       <div><div class="big t" style="font-size:56pt;line-height:1.18">400–500</div><div class="lbl">lux ณ จุดทำงาน<br>(งานเขียน พิมพ์ อ่าน)</div></div>
     </div>
-    <div class="src">มาตรฐานความเข้มของแสงสว่าง [2] · วัดที่ระนาบสูง 75 ซม. ทุกช่อง 2×2 ม. และ ณ จุดทำงาน
+    <div class="src">เกณฑ์ขั้นต่ำเพื่อสายตาคนทำงาน [2] · วัดที่ระนาบ 75 ซม. ทุกช่อง 2×2 ม. และ ณ จุดทำงาน
     ในสภาพทำงานปกติ ช่วงแสงธรรมชาติน้อยที่สุด [3]</div>
   </div>
   <h3>วัตถุประสงค์</h3>
   <ol class="obj">
-    <li>สร้างเครื่อง<b>คัดกรอง (pre-survey)</b> ต้นทุนต่ำ ที่แสดงทั้งค่า Raw และค่าหลังชดเชย ตรวจสอบย้อนกลับได้</li>
+    <li>ให้คนทำงาน<b>ได้แสงที่เหมาะกับงานจริง</b> ด้วยเครื่องคัดกรอง (pre‑survey) ต้นทุนต่ำที่ตรวจสอบย้อนกลับได้</li>
     <li>เปลี่ยนความรู้ที่อยู่กับผู้พัฒนา ให้เป็น<b>ความรู้ขององค์กร</b>: โค้ด SOP คู่มือ ไฟล์ STL ในคลังสาธารณะ</li>
-    <li>ใช้ข้อมูลเชิงประจักษ์ปรับปรุงแสงตามวงจร <b style="white-space:nowrap">ตรวจ → แก้ → ตรวจซ้ำ</b> ของ Green Office 5.2.1</li>
+    <li>ปรับปรุงแสงด้วยข้อมูลเชิงประจักษ์ตามวงจร <b>PDCA</b> (<span style="white-space:nowrap">ตรวจ → แก้ → ตรวจซ้ำ</span>) ของ Green Office 5.2.1</li>
   </ol>
-  <h3>วงจรการจัดการความรู้</h3>
+  <h3>วงจรการจัดการความรู้ (PDCA + KM)</h3>
   {km_cycle_svg()}
-  <div class="cap"><b>ภาพที่ 1</b> วงจร KM ของโครงการ: ข้อมูลหน้างานกลายเป็นความรู้ที่ใช้ซ้ำได้ และให้การปรับปรุงเกิดจากหลักฐาน</div>
+  <div class="cap"><b>ภาพที่ 1</b> วงจร PDCA ของการดูแลแสง ต่อด้วยชั้น KM (ถอดบทเรียน → ใช้ซ้ำ) ทำให้ทุกรอบกลายเป็นความรู้ขององค์กร</div>
   <h3>อุปกรณ์และต้นทุน</h3>
   <div class="comps">
     <div><img class="ph2" src="assets/photos/tsl2591_crop.jpg" alt=""><div class="nm">TSL2591</div><div class="pr">หัวรับแสง · 200 ฿</div></div>
@@ -240,12 +241,13 @@ margin-top:10pt;text-align:center}}
   <div class="credit">ภาพ: Adafruit Industries (CC BY-SA) · Tpkull / Wikimedia Commons (CC BY-SA 4.0)</div>
   <div class="cost">
     <div class="row"><div class="nm">LightCheck KM<br><span style="font-weight:400;color:var(--ink2)">ต้นทุนจริง</span></div>
-      <div class="tr"><div class="b" style="width:1.5%;background:var(--teal)"></div></div><div class="v" style="position:absolute;left:250pt">≈ 385 ฿ <span style="font-weight:400;color:var(--ink2);font-size:16pt">(89 + 200 + 70 + PLA+ 54 g ≈ 26)</span></div></div>
-    <div class="row"><div class="nm">Hioki FT3424<br><span style="font-weight:400;color:var(--ink2)">เครื่องมาตรฐาน</span></div>
-      <div class="tr"><div class="b" style="width:100%;background:var(--blue)"></div></div><div class="v">26,340 ฿</div></div>
+      <div class="tr"><div class="b" style="width:1.4%;background:var(--teal)"></div></div><div class="v" style="position:absolute;left:250pt">≈ 385 ฿ <span style="font-weight:400;color:var(--ink2);font-size:16pt">(89 + 200 + 70 + PLA+ 54 g ≈ 26)</span></div></div>
+    <div class="row"><div class="nm">HIOKI FT3424<br><span style="font-weight:400;color:var(--ink2)">ถูกที่สุดที่สำรวจได้</span></div>
+      <div class="tr"><div class="b" style="width:100%;background:var(--blue)"></div></div><div class="v">28,184 ฿</div></div>
+    <div style="font-size:14.5pt;color:var(--ink2);text-align:right;margin-top:-2pt">HIOKI FT3424 (ญี่ปุ่น, JIS C 1609-1 AA / DIN 5032-7 B) 26,340 ฿ + VAT 7% = 28,183.80 ฿ [7]</div>
   </div>
   <div class="box teal" style="margin-top:12pt">
-    <div style="display:flex;align-items:center;gap:18pt"><div class="big t" style="font-size:72pt">~68×</div>
+    <div style="display:flex;align-items:center;gap:18pt"><div class="big t" style="font-size:72pt">~73×</div>
     <div style="font-size:21pt;line-height:1.35">ถูกกว่า แต่<b>ไม่ได้เทียบเท่า</b>เครื่องมาตรฐาน จึงแบ่งบทบาท:
     ต้นแบบหลายเครื่อง = คัดกรองให้ครอบคลุม · เครื่องมาตรฐาน = ยืนยันผลทางการ</div></div>
   </div>
@@ -264,7 +266,7 @@ margin-top:10pt;text-align:center}}
     <div>2. กรมสวัสดิการและคุ้มครองแรงงาน. มาตรฐานความเข้มของแสงสว่าง (2561).</div>
     <div>6. Lorenzo et al. (2022). Sensors 22(19), 7107.</div>
     <div>3. กรมสวัสดิการฯ. หลักเกณฑ์การตรวจวัดแสงสว่าง (2561).</div>
-    <div>7. HIOKI. LUX METER FT3424 specifications.</div>
+    <div>7. HIOKI FT3424 สเปกและราคา (Thai Interelectric).</div>
     <div>4. Adafruit. TSL2591 High Dynamic Range Light Sensor.</div>
     <div>รายการเต็ม: docs/references.md</div>
   </div>
