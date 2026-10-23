@@ -117,7 +117,7 @@ const NOTES = `ไฟล์ต้นฉบับโปสเตอร์ LightCh
       slide.addImage(o);
       if (it.radius > 0.5) round[name] = Math.min(it.radius / Math.min(it.w, it.h), 0.5);
     } else if (it.type === 'text') {
-      const pad = it.wrap ? it.w * 0.02 : 0;          // a little slack for PowerPoint's own Thai line breaking
+      const pad = it.wrap ? it.w * 0.01 : 0;          // a little slack for PowerPoint's own Thai line breaking
       let x = it.x, w = it.w;
       if (it.indent < 0) { x += it.indent; w -= it.indent; hang[name] = Math.round(-it.indent / 96 * SC * 914400); }
       if (pad && !it.shape) { if (it.align === 'center') { x -= pad / 2; w += pad; } else if (it.align === 'right') { x -= pad; w += pad; } else w += pad; }

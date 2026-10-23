@@ -126,7 +126,8 @@ function inPage() {
     const centers = frags.map(f => (f.top + f.bottom) / 2).sort((a, b) => a - b);
     let lines = 0, last = -1e9;
     for (const c of centers) { if (c - last > X * 0.5) { lines++; last = c; } }
-    return { paras: clean, lines, X, C,
+    const forced = lines <= clean.length;                              // every line ends at a <br>
+    return { paras: clean, lines, X, C, forced,
       boxTop: tall.top - (X - C),                                       // y of a PowerPoint box with exact spacing X
       contentTop: Math.min(...first.map(f => f.top)), contentBottom: Math.max(...frags.map(f => f.bottom)),
       align: ({ start: 'left', end: 'right', '-webkit-center': 'center' })[st.textAlign] || st.textAlign,
@@ -256,7 +257,7 @@ function inPage() {
         const ins = Object.assign({}, cb.ins);
         if (g.lines > 1) { const h = (g.X - g.C) / 2; ins.t = Math.max(0, ins.t - h); ins.b = Math.max(0, ins.b + h); }
         items.push({ type: 'text', x: r.x, y: r.y, w: r.w, h: r.h, paras: g.paras, align: g.align, valign: 'middle',
-          wrap: !(g.nowrap || g.lines === 1), single: g.lines === 1, lineHeight: g.lines > 1 ? g.X : null, name,
+          wrap: !(g.nowrap || g.lines === 1 || g.forced), single: g.lines === 1, lineHeight: g.lines > 1 ? g.X : null, name,
           shape: { fill: sh.fill, radius: sh.radius + (sh.line ? sh.line.width / 1.5 : 0), ellipse: sh.ellipse, line: sh.line || null },
           ins });
       } else {
@@ -268,7 +269,7 @@ function inPage() {
               align: g.align, valign: 'middle', wrap: false, single: true, name, indent: g.indent });
           } else {
             items.push({ type: 'text', x: cb.x, y: g.boxTop, w: cb.w, h: g.lines * g.X, paras: g.paras, align: g.align,
-              valign: 'top', wrap: true, single: false, lineHeight: g.X, name, indent: g.indent });
+              valign: 'top', wrap: !g.forced, single: false, lineHeight: g.X, name, indent: g.indent });
           }
         }
       }
