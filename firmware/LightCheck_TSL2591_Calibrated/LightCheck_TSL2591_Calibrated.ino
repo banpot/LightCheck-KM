@@ -1,5 +1,6 @@
 /*
   LightCheck KM - TSL2591 + LCD1602 on Wemos D1 mini (ESP8266)
+  Firmware v1.1.0  (see CHANGELOG.md for the v1.0 -> v1.1 changes)
 
   Purpose
   -------
@@ -19,7 +20,7 @@
   I2C addresses
   -------------
   TSL2591 = 0x29
-  LCD1602 = 0x3F
+  LCD1602 = 0x3F   (PCF8574A backpack; PCF8574 backpacks are usually 0x27)
 
   Accuracy compensation
   ---------------------
@@ -36,11 +37,33 @@
     from paired measurements AND validated on a separate data set/session.
   - Auto-ranging is based on RAW ADC counts, never on compensated lux.
   - The code logs RawLux and CalLux separately for traceability.
-  - Keep calibration date/model/version in the private KM repository.
+  - Keep calibration date/model/version in the KM repository.
+  - The coefficients are valid for the gain/integration time they were
+    derived at (CAL_GAIN / CAL_TIMING). Readings taken at another gain are
+    flagged (Serial CalScope=OUT, LCD "!") because the real TSL2591 gain
+    ratios differ from the library's nominal values (datasheet typ.
+    MED 24.5x / HIGH 400x vs library 25x / 428x, about 4-5 % step).
 
   Saturation limits follow the TSL2591 datasheet:
   - 100 ms integration: 36863 counts
   - 200-600 ms:          65535 counts
+
+  v1.1.0 auto-range fix
+  ---------------------
+  v1.0 stepped the gain UP whenever Full < 4095 counts (1/16 of full scale)
+  without checking whether the next gain (x17-25) would saturate. A host
+  simulation with datasheet-typical gains (tools/fw_sim) shows v1.0 hunting
+  between gains and printing SATURATED every other reading at ~11-16 lux
+  (HIGH<->MAX), ~260 lux (MED<->HIGH; the exact band moves with each unit's
+  real gain ratio) and ~4,300-6,500 lux (LOW<->MED, near windows). It also
+  kept everything below ~260 lux on HIGH gain, which adds the ~5 % library
+  vs real gain-ratio step inside the office range.
+  v1.1: (1) predicts the counts at the next gain and steps UP only if they
+  stay below 70 % of full scale and Full < 1000 counts; (2) steps DOWN at
+  90 % of full scale; (3) leaves HIGH/MAX as soon as the lower gain would
+  still give >= 1500 counts, and leaves LOW as soon as MED fits.
+  Result: no hunting, and the office range (~100 to ~2,900 lux) is always
+  read on MED gain = one calibration model.
 */
 
 #include <Wire.h>
@@ -51,6 +74,8 @@
 
 #define LCD_ADDR     0x3F
 #define TSL2591_ADDR 0x29
+
+const char FW_VERSION[] = "1.1.0";
 
 Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
 LiquidCrystal_I2C lcd(LCD_ADDR, 16, 2);
@@ -64,8 +89,13 @@ const bool  CALIBRATION_ENABLED = false;
 
 // Linear regression model: reference_lux = a * sensor_raw_lux + b
 // Identity values below intentionally make no correction until calibration.
+// Use calibration/fit_calibration.py to derive and validate a and b.
 const float CAL_SLOPE  = 1.000000f;  // a  [replace after calibration]
 const float CAL_OFFSET = 0.000000f;  // b  [replace after calibration]
+
+// Gain / integration time at which the paired data were collected.
+const tsl2591Gain_t            CAL_GAIN   = TSL2591_GAIN_MED;
+const tsl2591IntegrationTime_t CAL_TIMING = TSL2591_INTEGRATIONTIME_300MS;
 
 // Traceability metadata: update whenever coefficients are changed.
 const char CAL_MODEL_VERSION[] = "CAL-UNSET";
@@ -75,6 +105,28 @@ const char CAL_REFERENCE[]     = "REFERENCE-METER-ID";
 // Optional sanity bound for office pre-survey. This is NOT a legal threshold;
 // it only prevents a bad coefficient from producing an absurd negative value.
 const float MIN_VALID_CORRECTED_LUX = 0.0f;
+
+// -------------------------------------------------------------------------
+// SERIAL OUTPUT FORMAT
+// -------------------------------------------------------------------------
+// false = human-readable key=value lines (default, same as v1.0)
+// true  = CSV rows for paired-measurement logging; paste into
+//         calibration/paired_measurements.csv next to the reference value.
+const bool SERIAL_CSV = false;
+
+// -------------------------------------------------------------------------
+// AUTO-RANGE PARAMETERS (raw ADC counts)
+// -------------------------------------------------------------------------
+// Step gain DOWN when either channel reaches this fraction of full scale.
+const float    RANGE_STEP_DOWN_FRACTION = 0.90f;
+// Step gain UP only if the predicted counts at the next gain stay below this
+// fraction of full scale (prevents MED<->HIGH oscillation).
+const float    RANGE_STEP_UP_HEADROOM   = 0.70f;
+// ...and only when the signal is really small (keeps office light on MED).
+const uint16_t RANGE_STEP_UP_FLOOR      = 1000;
+// From HIGH/MAX, go back to the lower gain as soon as it would still give at
+// least this many counts (1.5x the floor = hysteresis band).
+const uint16_t RANGE_PREFER_LOWER       = 1500;
 
 // -------------------------------------------------------------------------
 // HELPERS
@@ -130,6 +182,21 @@ const char *gainName(tsl2591Gain_t g) {
   return "?";
 }
 
+// Nominal gain multipliers used by Adafruit_TSL2591::calculateLux().
+float gainFactor(tsl2591Gain_t g) {
+  switch (g) {
+    case TSL2591_GAIN_LOW:  return 1.0f;
+    case TSL2591_GAIN_MED:  return 25.0f;
+    case TSL2591_GAIN_HIGH: return 428.0f;
+    case TSL2591_GAIN_MAX:  return 9876.0f;
+  }
+  return 1.0f;
+}
+
+bool calibrationInScope(tsl2591Gain_t g, tsl2591IntegrationTime_t t) {
+  return (g == CAL_GAIN) && (t == CAL_TIMING);
+}
+
 // Apply the validated local calibration model.
 // If calibration is disabled, return raw lux unchanged.
 float compensateLux(float rawLux) {
@@ -153,27 +220,51 @@ float compensateLux(float rawLux) {
   return corrected;
 }
 
-// Auto-ranging shifts gain so ADC values stay away from saturation and the
-// extreme low end. Returns true if gain changed; caller discards this sample.
+// Auto-ranging with hysteresis on RAW ADC counts.
+// Returns true if gain changed (the next reading uses the new gain).
 bool autoRange(uint16_t full, uint16_t ir) {
   tsl2591Gain_t            g = tsl.getGain();
   tsl2591IntegrationTime_t t = tsl.getTiming();
-  uint16_t sat = saturationLimit(t);
+  uint16_t sat     = saturationLimit(t);
+  uint16_t hiLimit = (uint16_t)(RANGE_STEP_DOWN_FRACTION * sat);
+  uint16_t maxCh   = (full > ir) ? full : ir;
 
-  // Saturated -> step gain DOWN.
-  if (full >= sat || ir >= sat) {
+  // Near/at saturation -> step gain DOWN.
+  if (maxCh >= hiLimit) {
     if (g == TSL2591_GAIN_MAX)  { tsl.setGain(TSL2591_GAIN_HIGH); return true; }
     if (g == TSL2591_GAIN_HIGH) { tsl.setGain(TSL2591_GAIN_MED);  return true; }
     if (g == TSL2591_GAIN_MED)  { tsl.setGain(TSL2591_GAIN_LOW);  return true; }
     return false; // already at minimum gain
   }
 
-  // Very low signal -> step gain UP. Use 1/16 full scale as a practical floor.
-  uint16_t lowThresh = sat / 16;
-  if (full < lowThresh) {
-    if (g == TSL2591_GAIN_LOW)  { tsl.setGain(TSL2591_GAIN_MED);  return true; }
-    if (g == TSL2591_GAIN_MED)  { tsl.setGain(TSL2591_GAIN_HIGH); return true; }
-    if (g == TSL2591_GAIN_HIGH) { tsl.setGain(TSL2591_GAIN_MAX);  return true; }
+  // On HIGH/MAX, return to the lower gain once it gives enough counts, so
+  // office light is never left on a high gain after a dark moment.
+  if (g == TSL2591_GAIN_MAX || g == TSL2591_GAIN_HIGH) {
+    tsl2591Gain_t lower = (g == TSL2591_GAIN_MAX) ? TSL2591_GAIN_HIGH : TSL2591_GAIN_MED;
+    float predictedLower = (float)full * gainFactor(lower) / gainFactor(g);
+    if (predictedLower >= (float)RANGE_PREFER_LOWER) {
+      tsl.setGain(lower);
+      return true;
+    }
+  }
+
+  // Low signal -> step gain UP, but only if the next gain will not
+  // saturate (predicted counts < headroom). This is what stops oscillation.
+  // LOW -> MED needs only the headroom test (MED is the preferred office
+  // gain); MED -> HIGH and HIGH -> MAX also need Full < RANGE_STEP_UP_FLOOR.
+  if (g == TSL2591_GAIN_LOW || full < RANGE_STEP_UP_FLOOR) {
+    tsl2591Gain_t next;
+    if      (g == TSL2591_GAIN_LOW)  next = TSL2591_GAIN_MED;
+    else if (g == TSL2591_GAIN_MED)  next = TSL2591_GAIN_HIGH;
+    else if (g == TSL2591_GAIN_HIGH) next = TSL2591_GAIN_MAX;
+    else return false;              // already at maximum gain
+
+    float ratio     = gainFactor(next) / gainFactor(g);
+    float predicted = (float)maxCh * ratio;
+    if (predicted < RANGE_STEP_UP_HEADROOM * (float)sat) {
+      tsl.setGain(next);
+      return true;
+    }
   }
   return false;
 }
@@ -187,14 +278,20 @@ void configureSensor() {
 
 void printCalibrationInfo() {
   Serial.println(F("--- Calibration / compensation ---"));
+  Serial.print(F("Firmware=")); Serial.println(FW_VERSION);
   Serial.print(F("Enabled=")); Serial.println(CALIBRATION_ENABLED ? F("YES") : F("NO"));
   Serial.print(F("Model="));   Serial.println(CAL_MODEL_VERSION);
   Serial.print(F("Date="));    Serial.println(CAL_DATE);
   Serial.print(F("Reference=")); Serial.println(CAL_REFERENCE);
   Serial.print(F("Slope(a)="));  Serial.println(CAL_SLOPE, 6);
   Serial.print(F("Offset(b)=")); Serial.println(CAL_OFFSET, 6);
+  Serial.print(F("ValidAt=Gain ")); Serial.print(gainName(CAL_GAIN));
+  Serial.print(F(" / Tint ")); Serial.print(integrationMs(CAL_TIMING)); Serial.println(F("ms"));
   Serial.println(F("Formula: CalLux = a*RawLux + b"));
   Serial.println(F("----------------------------------"));
+  if (SERIAL_CSV) {
+    Serial.println(F("ms,fw,cal_model,cal_on,gain,tint_ms,full,ir,raw_lux,cal_lux,cal_scope"));
+  }
 }
 
 // -------------------------------------------------------------------------
@@ -208,7 +305,8 @@ void setup() {
 
   lcd.init();
   lcd.backlight();
-  lcdLine(0, "Checking HW...");
+  lcdLine(0, "LightCheck v1.1");
+  lcdLine(1, "Checking HW...");
   Serial.println(F("Checking hardware..."));
   delay(800);
 
@@ -216,9 +314,10 @@ void setup() {
   delay(400);
   if (!i2cDeviceFound(LCD_ADDR)) {
     // LCD is already being used to show startup status; warn on Serial only.
-    Serial.println(F("WARN: LCD not ACKing at 0x3F"));
+    Serial.println(F("WARN: LCD not ACKing at 0x3F (try 0x27)"));
+  } else {
+    lcdLine(1, "LCD: OK");
   }
-  lcdLine(1, "LCD: OK");
   delay(500);
 
   lcdLine(1, "TSL2591 0x29...");
@@ -273,59 +372,72 @@ void loop() {
   tsl2591IntegrationTime_t t = tsl.getTiming();
   uint16_t sat = saturationLimit(t);
   bool saturated = (full >= sat) || (ir >= sat);
+  bool inScope   = calibrationInScope(g, t);
 
   // Raw lux is the library result before local correction.
   float rawLux = saturated ? -1.0f : tsl.calculateLux(full, ir);
   float calLux = compensateLux(rawLux);
+  bool rawOk = !(saturated || rawLux < 0.0f || isnan(rawLux) || isinf(rawLux));
+  bool calOk = !(saturated || calLux < 0.0f || isnan(calLux) || isinf(calLux));
 
   uint16_t visible = (full > ir) ? (full - ir) : 0;
 
   // ---- Serial audit/debug output ----
-  Serial.print(F("Gain="));  Serial.print(gainName(g));
-  Serial.print(F(" Tint=")); Serial.print(integrationMs(t)); Serial.print(F("ms"));
-  Serial.print(F(" Full=")); Serial.print(full);
-  Serial.print(F(" IR="));   Serial.print(ir);
-  Serial.print(F(" Vis="));  Serial.print(visible);
-  Serial.print(F(" RawLux="));
-
-  if (saturated) {
-    Serial.print(F("SAT"));
-  } else if (rawLux < 0.0f || isnan(rawLux) || isinf(rawLux)) {
-    Serial.print(F("ERR"));
+  if (SERIAL_CSV) {
+    Serial.print(millis());          Serial.print(',');
+    Serial.print(FW_VERSION);        Serial.print(',');
+    Serial.print(CAL_MODEL_VERSION); Serial.print(',');
+    Serial.print(CALIBRATION_ENABLED ? 1 : 0); Serial.print(',');
+    Serial.print(gainName(g));       Serial.print(',');
+    Serial.print(integrationMs(t));  Serial.print(',');
+    Serial.print(full);              Serial.print(',');
+    Serial.print(ir);                Serial.print(',');
+    if (rawOk) Serial.print(rawLux, 3); else Serial.print(saturated ? F("SAT") : F("ERR"));
+    Serial.print(',');
+    if (calOk) Serial.print(calLux, 3); else Serial.print(saturated ? F("SAT") : F("ERR"));
+    Serial.print(',');
+    Serial.println(inScope ? F("OK") : F("OUT"));
   } else {
-    Serial.print(rawLux, 3);
-  }
+    Serial.print(F("Gain="));  Serial.print(gainName(g));
+    Serial.print(F(" Tint=")); Serial.print(integrationMs(t)); Serial.print(F("ms"));
+    Serial.print(F(" Full=")); Serial.print(full);
+    Serial.print(F(" IR="));   Serial.print(ir);
+    Serial.print(F(" Vis="));  Serial.print(visible);
+    Serial.print(F(" RawLux="));
+    if (saturated)      Serial.print(F("SAT"));
+    else if (!rawOk)    Serial.print(F("ERR"));
+    else                Serial.print(rawLux, 3);
 
-  Serial.print(F(" CalLux="));
-  if (saturated) {
-    Serial.print(F("SAT"));
-  } else if (calLux < 0.0f || isnan(calLux) || isinf(calLux)) {
-    Serial.print(F("ERR"));
-  } else {
-    Serial.print(calLux, 3);
+    Serial.print(F(" CalLux="));
+    if (saturated)      Serial.print(F("SAT"));
+    else if (!calOk)    Serial.print(F("ERR"));
+    else                Serial.print(calLux, 3);
+    Serial.print(F(" CalMode="));
+    Serial.print(CALIBRATION_ENABLED ? F("ON") : F("OFF"));
+    Serial.print(F(" CalScope="));
+    Serial.println(inScope ? F("OK") : F("OUT"));
   }
-  Serial.print(F(" CalMode="));
-  Serial.println(CALIBRATION_ENABLED ? F("ON") : F("OFF"));
 
   // ---- LCD ----
   // Line 1: show compensated value when enabled; otherwise raw value.
+  // Prefix: C = calibrated, R = raw, ! = calibrated but outside the
+  // gain/timing the coefficients were validated at.
   char buf[17];
+  char mode = CALIBRATION_ENABLED ? (inScope ? 'C' : '!') : 'R';
   if (saturated) {
     snprintf(buf, sizeof(buf), "Lux: SATURATED ");
-  } else if (calLux < 0.0f || isnan(calLux) || isinf(calLux)) {
+  } else if (!calOk) {
     snprintf(buf, sizeof(buf), "Lux: ERROR     ");
   } else {
-    char fbuf[10];
+    char fbuf[12];
     dtostrf(calLux, 7, 2, fbuf);
-    snprintf(buf, sizeof(buf), "%cLux:%s", CALIBRATION_ENABLED ? 'C' : 'R', fbuf);
+    snprintf(buf, sizeof(buf), "%cLux:%s", mode, fbuf);
   }
   lcdLine(0, buf);
 
-  // Line 2: C/R indicates Calibrated/Raw mode.
-  snprintf(buf, sizeof(buf), "%c G:%s T:%ums",
-           CALIBRATION_ENABLED ? 'C' : 'R',
-           gainName(g), integrationMs(t));
-  buf[16] = '\0';
+  // Line 2: mode, gain and integration time, e.g. "R G:25x   300ms".
+  snprintf(buf, sizeof(buf), "%c G:%-5s %3ums",
+           mode, gainName(g), (unsigned)integrationMs(t));
   lcdLine(1, buf);
 
   // ---- Auto-range AFTER reporting ----

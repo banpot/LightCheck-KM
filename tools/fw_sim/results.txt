@@ -1,0 +1,24 @@
+== v10 | device MED/HIGH gain = 24.5 400 (library assumes 25 / 428)
+  ascending sweep        levels= 521 hunting= 41 showsSAT= 41  office(100-2900lx) on MED: 121/170
+  descending sweep       levels= 521 hunting= 40 showsSAT= 40  office(100-2900lx) on MED: 122/171
+  dark->office jumps     levels=  70 hunting=  1 showsSAT=  1  office(100-2900lx) on MED: 50/70
+== v10 | device MED/HIGH gain = 22 440 (library assumes 25 / 428)
+  ascending sweep        levels= 521 hunting= 41 showsSAT= 41  office(100-2900lx) on MED: 115/170
+  descending sweep       levels= 521 hunting= 40 showsSAT= 40  office(100-2900lx) on MED: 127/171
+  dark->office jumps     levels=  70 hunting=  5 showsSAT=  5  office(100-2900lx) on MED: 52/70
+== v10 | device MED/HIGH gain = 27 360 (library assumes 25 / 428)
+  ascending sweep        levels= 521 hunting= 50 showsSAT= 50  office(100-2900lx) on MED: 116/170
+  descending sweep       levels= 521 hunting= 49 showsSAT= 49  office(100-2900lx) on MED: 126/171
+  dark->office jumps     levels=  70 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 48/70
+== current | device MED/HIGH gain = 24.5 400 (library assumes 25 / 428)
+  ascending sweep        levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 169/170
+  descending sweep       levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 171/171
+  dark->office jumps     levels=  70 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 69/70
+== current | device MED/HIGH gain = 22 440 (library assumes 25 / 428)
+  ascending sweep        levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 170/170
+  descending sweep       levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 171/171
+  dark->office jumps     levels=  70 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 70/70
+== current | device MED/HIGH gain = 27 360 (library assumes 25 / 428)
+  ascending sweep        levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 164/170
+  descending sweep       levels= 521 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 171/171
+  dark->office jumps     levels=  70 hunting=  0 showsSAT=  0  office(100-2900lx) on MED: 67/70
