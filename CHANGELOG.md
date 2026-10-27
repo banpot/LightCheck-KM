@@ -1,5 +1,15 @@
 # Changelog
 
+## [Enclosure 1.1] – 2026-10-27
+### Hardware
+- **Fixed** screw holes too tight to drive on FDM prints (holes print 0.2–0.4 mm undersize):
+  M3 pilot 2.5 → 2.8 mm, M2.5 pilots 2.1 → 2.3 mm, M3 clearance 3.4 → 3.6 mm, counterbore 6.4 → 6.6 mm,
+  1/4"-20 nut pocket +0.2 mm, tripod hole 6.8 → 7.0 mm; 45° lead-in on every screw pilot; corner bosses Ø7.0 → Ø7.6.
+- **Added** fit profiles: `stl/` standard (holes +0.2, clearance 0.35 mm) and `stl/loose/` for coarse printers
+  (holes +0.4, clearance 0.55 mm, 108 × 64 × 26 mm); `--fit custom --hole-comp X --clr Y` for any printer.
+- **Added** `stl/fit_test/hole_fit_test.stl` (~10 g): labelled M3 / M2.5 pilots and 1/4" nut pockets for choosing a profile.
+- Sensor plane, sensor position on the lid and the light aperture are unchanged; record the profile in calibration reports.
+
 ## [1.1.0] – 2026-10-23
 ### Firmware
 - **Fixed** auto-range gain hunting: v1.0 stepped the gain up whenever Full < 4095 counts without

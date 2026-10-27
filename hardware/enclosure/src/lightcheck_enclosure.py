@@ -14,8 +14,16 @@ Output (relative to this file):
   ../stl/proxies/*.stl          (simple module stand-ins, used only for renders/checks)
   ../stl/scene.json             (colours/positions for the three.js renderer)
 
-Run:   python3 lightcheck_enclosure.py            # build + validate
+Run:   python3 lightcheck_enclosure.py                 # build BOTH fit profiles + the fit-test plate
+       python3 lightcheck_enclosure.py --fit standard  # well-tuned printer      -> ../stl/
+       python3 lightcheck_enclosure.py --fit loose     # coarse / untuned printer -> ../stl/loose/
+       python3 lightcheck_enclosure.py --fit custom --hole-comp 0.5 --clr 0.6   -> ../stl/custom/
 Needs: pip install manifold3d trimesh numpy matplotlib
+
+Printing tolerance (FDM prints holes smaller and walls fatter than the model):
+  HOLE_COMP  is added to the diameter of every screw / nut / tripod hole
+  CLR        is the per-side clearance of every sliding fit (lid lip, board pockets, LCD window)
+  Not sure which to use? print ../stl/fit_test/hole_fit_test.stl first (~10 g of filament).
 
 Coordinate system (assembled):  X -> right, Y -> away from the user (far end),
 Z -> up, origin = centre of the footprint at the bottom of the base.
@@ -26,9 +34,11 @@ measure it with calipers and edit the value before printing.
 Changing the enclosure, the sensor pocket/aperture or the sensor position
 REQUIRES re-verification of the calibration model (KM doc section 9.1.12).
 """
+import argparse
 import json
 import math
 import os
+import subprocess
 import sys
 
 import numpy as np
@@ -37,7 +47,27 @@ from manifold3d import CrossSection, FillRule, JoinType, Manifold, set_circular_
 set_circular_segments(72)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.normpath(os.path.join(HERE, "..", "stl"))
+STL_DIR = os.path.normpath(os.path.join(HERE, "..", "stl"))
+
+# ---- fit profile ----------------------------------------------------------------
+FIT_PROFILES = {
+    # hole_comp: added to every screw/nut hole diameter; clr: per-side sliding clearance
+    "standard": dict(hole_comp=0.2, clr=0.35, chamfer=0.6),   # tuned printer, 0.4 nozzle, 0.2 mm layers
+    "loose":    dict(hole_comp=0.4, clr=0.55, chamfer=0.8),   # coarse/untuned printer, 0.28 mm layers, over-extrusion
+}
+_ap = argparse.ArgumentParser(description="LightCheck KM enclosure generator")
+_ap.add_argument("--fit", choices=["all", "standard", "loose", "custom"], default="all")
+_ap.add_argument("--hole-comp", type=float, help="custom: extra hole diameter (mm)")
+_ap.add_argument("--clr", type=float, help="custom: per-side clearance (mm)")
+ARGS, _ = _ap.parse_known_args()
+if ARGS.fit == "custom":
+    FIT = dict(hole_comp=ARGS.hole_comp if ARGS.hole_comp is not None else 0.3,
+               clr=ARGS.clr if ARGS.clr is not None else 0.45, chamfer=0.7)
+else:
+    FIT = FIT_PROFILES["standard" if ARGS.fit == "all" else ARGS.fit]
+HOLE_COMP = FIT["hole_comp"]
+OUT = {"standard": STL_DIR, "all": STL_DIR}.get(ARGS.fit, os.path.join(STL_DIR, ARGS.fit))
+SUFFIX = "" if ARGS.fit in ("standard", "all") else "_" + ARGS.fit
 
 # =============================================================================
 # PARAMETERS (mm)
@@ -47,11 +77,12 @@ WALL = 2.2            # side wall thickness (>= 2 mm)
 FLOOR = 2.0           # base floor thickness
 LID_T = 2.4           # lid plate thickness
 CORNER_R = 6.0        # outer corner radius (plan view)
-CLR = 0.3             # general fit clearance per side
+CLR = FIT["clr"]      # general fit clearance per side (fit profile)
 LIP_H = 2.0           # lid locating lip height (goes inside the base walls)
 LIP_T = 1.2           # lid lip thickness
 EDGE_MARGIN = 2.5     # min solid lid around the sensor pocket
-CHAMFER = 0.6         # 45 deg chamfer on the bed-side outer edges (hides elephant foot)
+CHAMFER = FIT["chamfer"]  # 45 deg chamfer on the bed-side outer edges (hides elephant foot)
+LEAD_IN = 0.6         # depth of the 45-deg lead-in cone at the mouth of every screw pilot
 
 # ---- LCD1602 (HD44780, 80x36 PCB) + PCF8574 I2C backpack ----------------------
 LCD_PCB_W = 80.0      # [VERIFY] PCB length
@@ -59,7 +90,7 @@ LCD_PCB_D = 36.0      # [VERIFY] PCB width
 LCD_PCB_T = 1.6       # [VERIFY] PCB thickness
 LCD_HOLE_DX = 75.0    # [VERIFY] mounting-hole spacing (X)  (holes 2.5 mm from edges)
 LCD_HOLE_DY = 31.0    # [VERIFY] mounting-hole spacing (Y)
-LCD_SCREW_PILOT = 2.1 # pilot for M2.5 self-tapping screws (LCD holes are 2.5-3.0 mm)
+LCD_SCREW_PILOT = 2.1 + HOLE_COMP  # pilot for M2.5 self-tapping screws (LCD holes are 2.5-3.0 mm)
 LCD_STANDOFF_D = 5.6  # standoff outer diameter (must clear the bezel corner)
 LCD_BEZEL_W = 71.2    # [VERIFY] metal bezel outer length
 LCD_BEZEL_D = 24.2    # [VERIFY] metal bezel outer width
@@ -68,7 +99,7 @@ LCD_BEZEL_OFF_X = 0.0 # [VERIFY] bezel centre offset from PCB centre (X)
 LCD_BEZEL_OFF_Y = 0.0 # [VERIFY] bezel centre offset from PCB centre (Y)
 LCD_VIEW_W = 64.5     # viewing area (render only)
 LCD_VIEW_D = 16.0
-LCD_WINDOW_CLR = 0.4  # window clearance around bezel, per side
+LCD_WINDOW_CLR = 0.1 + CLR  # window clearance around bezel, per side
 LCD_BEZEL_RECESS = 0.3  # bezel top sits this far below the lid top surface
 LCD_BACK_DEPTH = 12.0 # [VERIFY] backpack + trimpot depth below the LCD PCB bottom
 LCD_HEADER_CLEAR = 16.0  # free space left of the LCD for the backpack's 4-pin I2C header
@@ -97,10 +128,10 @@ TSL_D = 17.78         # board Y  (0.7")
 TSL_T = 1.6           # [VERIFY] PCB thickness
 TSL_HOLE_DX = 20.32   # M2.5 hole spacing X (holes 2.54 from edges)
 TSL_HOLE_DY = 12.70   # M2.5 hole spacing Y
-TSL_HOLE_PILOT = 2.1  # optional M2.5 screw pilot
+TSL_HOLE_PILOT = 2.1 + HOLE_COMP  # optional M2.5 screw pilot
 TSL_HDR_Y = -6.35     # 6-pin header row centre, relative to board centre (toward the user)
-TSL_HDR_SLOT = (16.4, 3.4)   # slot for header plastic + pins
-TSL_POCKET_CLR = 0.3
+TSL_HDR_SLOT = (16.4 + 2 * HOLE_COMP, 3.4 + 2 * HOLE_COMP)   # slot for header plastic + pins
+TSL_POCKET_CLR = CLR
 TSL_TAPE = 0.0        # add thickness of foam tape if you mount the board on tape
 TSL_PAD_T = 2.0       # lid thickening under the pocket
 TSL_X = 20.0          # sensor centre X (right side of the far end; text goes on the left)
@@ -109,19 +140,19 @@ SENSOR_PKG = (2.0, 2.4, 0.65)    # TSL2591 DFN-6 package (on board centre)
 JST_SH = (4.25, 6.0, 2.95)       # STEMMA QT connectors at x = +-10.03 (board-relative)
 
 # ---- screws -------------------------------------------------------------------
-BOSS_D = 7.0          # corner boss diameter
+BOSS_D = 7.6          # corner boss diameter (keeps >= 0.4 mm wall round the counterbore)
 BOSS_INSET = 5.2      # boss centre from the outer edges
 LID_BOSS_H = 3.0      # boss under the lid (gives depth for the counterbore)
-M3_PILOT = 2.5        # base boss pilot for M3 self-tapping (M3 x 12)
+M3_PILOT = 2.6 + HOLE_COMP   # base boss pilot for M3 self-tapping (M3 x 12); prints ~2.5-2.7
 M3_PILOT_DEPTH = 12.0
-M3_CLEAR = 3.4
-M3_CB_D = 6.4         # counterbore for M3 pan/socket head
+M3_CLEAR = 3.4 + HOLE_COMP
+M3_CB_D = 6.4 + HOLE_COMP    # counterbore for M3 pan/socket head (head 5.5-5.7)
 M3_CB_DEPTH = 3.0     # head sits below the lid top -> nothing rises above the sensor plane
 
 # ---- tripod (1/4"-20 hex nut, captured from inside) --------------------------------
-NUT_AF = 11.11 + 0.35 # across flats (7/16") + clearance  [VERIFY your nut]
+NUT_AF = 11.11 + 0.35 + HOLE_COMP  # across flats (7/16") + clearance  [VERIFY your nut]
 NUT_T = 5.56          # nut thickness (7/32")
-TRIPOD_HOLE = 6.8     # clearance for the 1/4" tripod screw
+TRIPOD_HOLE = 6.8 + HOLE_COMP  # clearance for the 1/4" tripod screw
 TRIPOD_SHOULDER = 1.6 # floor under the nut (thin = more thread engagement)
 TRIPOD_BOSS_D = 18.0
 
@@ -250,6 +281,7 @@ def build_base():
         shell += cyl(x, y, BOSS_D, 0, Z_BOSS_TOP) ^ outer_solid
     for (x, y) in CORNERS:
         shell -= cyl(x, y, M3_PILOT, Z_BOSS_TOP - M3_PILOT_DEPTH, Z_BOSS_TOP + 0.1)
+        shell -= Manifold.cylinder(LEAD_IN + 0.01, M3_PILOT / 2, M3_PILOT / 2 + LEAD_IN, circular_segments=48).translate([x, y, Z_BOSS_TOP - LEAD_IN])
 
     # D1 mini cradle: corner pads + locating bars
     zt = D1_PCB_BOT
@@ -312,6 +344,7 @@ def build_lid():
     # LCD screw pilots
     for (x, y) in lcd_holes:
         lid -= cyl(x, y, LCD_SCREW_PILOT, LCD_PCB_TOP - 0.1, Z_LID_BOT + 1.0)
+        lid -= Manifold.cylinder(0.41, LCD_SCREW_PILOT / 2 + 0.4, LCD_SCREW_PILOT / 2, circular_segments=48).translate([x, y, LCD_PCB_TOP - 0.01])
     # sensor pocket (board top flush with lid top)
     lid -= prism(rrect(pw, pd, 1.0).translate([TSL_X, TSL_Y]), TSL_BOARD_BOT, H + 1)
     # header slot
@@ -333,6 +366,46 @@ def build_lid():
     for t in (t1, t2):
         lid -= prism(t, H - TEXT_DEPTH, H + 1)
     return lid, (tx0, tx1)
+
+
+# =============================================================================
+# FIT-TEST PLATE  (print this first on a new printer; ~10 g, no supports)
+# =============================================================================
+FIT_TEST = {
+    "M3 pilot": [2.6, 2.8, 3.0, 3.2],            # standard = 2.8, loose = 3.0
+    "M2.5 pilot": [2.1, 2.3, 2.5, 2.7],          # standard = 2.3, loose = 2.5
+    "1/4 nut": [11.46, 11.66, 11.86],            # across flats; standard = 11.66, loose = 11.86
+}
+
+
+def build_fit_test():
+    """Thin plate with screw bosses (same 6 mm depth as a real boss) and hex-nut pockets, labelled in mm."""
+    PT, BH, WD, DP = 2.0, 6.0, 100.0, 34.0
+    plate = chamfered_slab(WD, DP, 3.0, 0, PT, c_bot=0.4)
+    x0 = -WD / 2 + 7.0
+    holes = []
+    for row, (key, yc) in enumerate((("M3 pilot", 8.5), ("M2.5 pilot", -5.5))):
+        for i, d in enumerate(FIT_TEST[key]):
+            x = x0 + i * 10.0
+            plate += cyl(x, yc, d + 4.4, PT - 0.01, BH)
+            holes.append((x, yc, d))
+        plate -= prism(text_cs("M3" if row == 0 else "M2.5", 3.4, x0 + 3 * 10.0 + 9.5, yc), PT - 0.6, PT + 1)
+    nuts = []
+    for i, af in enumerate(FIT_TEST["1/4 nut"]):
+        x = 10.0 + i * 15.5
+        plate += hexagon(x, 3.5, af + 3.6, PT - 0.01, BH + 0.5)
+        nuts.append((x, af))
+    for x, yc, d in holes:
+        plate -= cyl(x, yc, d, -0.1, BH + 0.1)
+        plate -= Manifold.cylinder(LEAD_IN + 0.01, d / 2, d / 2 + LEAD_IN, circular_segments=48).translate([x, yc, BH - LEAD_IN])
+        plate -= prism(text_cs(f"{d:.1f}", 3.2, x, yc - 6.6), PT - 0.6, PT + 1)
+    for x, af in nuts:
+        plate -= hexagon(x, 3.5, af, BH + 0.5 - 5.8, BH + 0.6)
+        plate -= cyl(x, 3.5, 6.8, -0.1, BH)
+        plate -= prism(text_cs(f"{af:.2f}", 3.2, x, -7.2), PT - 0.6, PT + 1)
+    plate -= prism(text_cs("1/4 nut", 3.2, 25.5, -12.6), PT - 0.6, PT + 1)
+    plate -= prism(text_cs("LightCheck fit test", 3.2, x0 + 16.0, 14.6), PT - 0.6, PT + 1)
+    return plate
 
 
 # =============================================================================
@@ -398,18 +471,37 @@ def export(m, path):
     return tm
 
 
+def run_all():
+    """Build every fit profile in its own process (the parameters are module-level) + the fit test."""
+    rc = 0
+    for prof in ("standard", "loose"):
+        print(f"===== fit profile: {prof} {FIT_PROFILES[prof]} =====", flush=True)
+        rc |= subprocess.call([sys.executable, os.path.abspath(__file__), "--fit", prof])
+    ft = build_fit_test()
+    tm = export(ft, os.path.join(STL_DIR, "fit_test", "hole_fit_test.stl"))
+    print(json.dumps({"fit_test": {"watertight": bool(tm.is_watertight), "bbox_mm": [round(float(v), 1) for v in tm.extents],
+                                   "holes": FIT_TEST}}, indent=1))
+    rc |= 0 if tm.is_watertight else 1
+    return rc
+
+
 def main():
+    if ARGS.fit == "all":
+        return run_all()
     base = build_base()
     lid, text_band = build_lid()
     prox = build_proxies()
 
     os.makedirs(OUT, exist_ok=True)
-    report = {"outer_mm": [W, D, H], "parts": {}}
+    report = {"fit": ARGS.fit, "fit_params": FIT, "outer_mm": [W, D, H], "parts": {},
+              "holes_mm": {"M3_pilot": round(M3_PILOT, 2), "M3_clear": round(M3_CLEAR, 2), "M3_counterbore": round(M3_CB_D, 2),
+                           "M2.5_pilot": round(LCD_SCREW_PILOT, 2), "nut_AF": round(NUT_AF, 2), "tripod_hole": round(TRIPOD_HOLE, 2),
+                           "lid_lip_clr": CLR, "tsl_pocket_clr": TSL_POCKET_CLR, "lcd_window_clr": round(LCD_WINDOW_CLR, 2)}}
     ok = True
 
     # print orientation: base as-is (floor on bed); lid flipped (top face on bed)
     lid_print = lid.rotate([180, 0, 0]).translate([0, 0, H])
-    parts = {"lightcheck_base": base, "lightcheck_lid": lid_print}
+    parts = {"lightcheck_base" + SUFFIX: base, "lightcheck_lid" + SUFFIX: lid_print}
     for name, m in parts.items():
         tm = export(m, os.path.join(OUT, name + ".stl"))
         bb = tm.bounds
@@ -421,11 +513,12 @@ def main():
         report["parts"][name] = info
         ok &= info["watertight"] and info["volume_cm3"] > 0 and abs(info["min_z"]) < 1e-6
 
-    # assembled lid (for checks / renders)
-    export(lid, os.path.join(OUT, "proxies", "_lid_assembled.stl"))
-    pdir = os.path.join(OUT, "proxies")
-    for k, m in prox.items():
-        export(m, os.path.join(pdir, k + ".stl"))
+    # assembled lid + module proxies (renders use the standard profile only)
+    if not SUFFIX:
+        export(lid, os.path.join(OUT, "proxies", "_lid_assembled.stl"))
+        pdir = os.path.join(OUT, "proxies")
+        for k, m in prox.items():
+            export(m, os.path.join(pdir, k + ".stl"))
 
     # interference: every proxy vs base and lid (volume of intersection)
     inter = {}
@@ -477,8 +570,9 @@ def main():
             {"file": "../stl/lightcheck_lid.stl", "color": "#F4F4F0"},
         ],
     }
-    with open(os.path.join(OUT, "scene.json"), "w") as fh:
-        json.dump(scene, fh, indent=1)
+    if not SUFFIX:
+        with open(os.path.join(OUT, "scene.json"), "w") as fh:
+            json.dump(scene, fh, indent=1)
 
     report["PASS"] = bool(ok)
     print(json.dumps(report, indent=1))
