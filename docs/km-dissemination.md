@@ -18,7 +18,7 @@
 
 1. รายการอุปกรณ์และราคา: [`hardware/bom.md`](../hardware/bom.md)
 2. ไฟล์ STL พร้อมพิมพ์: [`hardware/enclosure/stl/`](../hardware/enclosure/stl/)
-3. Firmware v1.1.0: [`firmware/`](../firmware/)
+3. Firmware v1.1.1: [`firmware/`](../firmware/)
 4. คู่มือ: [`docs/user-manual.md`](user-manual.md)
 5. SOP + guard band: [`docs/measurement-SOP.md`](measurement-SOP.md)
 6. เครื่องมือวางจุดวัดและสร้างแบบบันทึก: [`tools/survey/grid_planner.py`](../tools/survey/grid_planner.py)

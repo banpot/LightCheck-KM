@@ -1,6 +1,6 @@
 /*
   LightCheck KM - TSL2591 + LCD1602 on Wemos D1 mini (ESP8266)
-  Firmware v1.1.0  (see CHANGELOG.md for the v1.0 -> v1.1 changes)
+  Firmware v1.1.1  (see CHANGELOG.md for the v1.0 -> v1.1 changes)
 
   Purpose
   -------
@@ -20,7 +20,9 @@
   I2C addresses
   -------------
   TSL2591 = 0x29
-  LCD1602 = 0x3F   (PCF8574A backpack; PCF8574 backpacks are usually 0x27)
+  LCD1602 = auto-detected at boot (PCF8574T backpack = 0x27, PCF8574AT = 0x3F;
+            any 0x20-0x27 / 0x38-0x3F is accepted). Set LCD_ADDR_FIXED to force one.
+  The boot log prints an I2C scan so wiring problems show up on Serial.
 
   Accuracy compensation
   ---------------------
@@ -85,13 +87,16 @@
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
 
-#define LCD_ADDR     0x3F
-#define TSL2591_ADDR 0x29
+// 0x00 = auto-detect the LCD backpack (recommended); or force e.g. 0x27 / 0x3F
+#define LCD_ADDR_FIXED 0x00
+#define TSL2591_ADDR   0x29
 
-const char FW_VERSION[] = "1.1.0";
+const char FW_VERSION[] = "1.1.1";
 
 Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
-LiquidCrystal_I2C lcd(LCD_ADDR, 16, 2);
+LiquidCrystal_I2C *lcd = nullptr;   // created once the I2C scan finds the backpack
+uint8_t lcdAddr = 0;
+uint32_t lcdLastProbeMs = 0;
 
 // -------------------------------------------------------------------------
 // CALIBRATION / COMPENSATION MODEL
@@ -157,14 +162,65 @@ bool i2cDeviceFound(uint8_t addr) {
 }
 
 void lcdLine(uint8_t row, const char *text) {
-  lcd.setCursor(0, row);
-  lcd.print("                ");
-  lcd.setCursor(0, row);
-  lcd.print(text);
+  if (!lcd) return;               // no LCD: Serial-only mode
+  lcd->setCursor(0, row);
+  lcd->print("                ");
+  lcd->setCursor(0, row);
+  lcd->print(text);
+}
+
+void lcdClear() {
+  if (lcd) lcd->clear();
+}
+
+bool lcdCandidate(uint8_t a) {
+  return (a >= 0x20 && a <= 0x27) || (a >= 0x38 && a <= 0x3F);   // PCF8574 / PCF8574A ranges
+}
+
+// Returns the LCD backpack address, or 0 if none answers.
+uint8_t findLcdAddress() {
+  if (LCD_ADDR_FIXED) return i2cDeviceFound(LCD_ADDR_FIXED) ? LCD_ADDR_FIXED : 0;
+  const uint8_t preferred[] = {0x27, 0x3F};
+  for (uint8_t i = 0; i < sizeof(preferred); i++) {
+    if (i2cDeviceFound(preferred[i])) return preferred[i];
+  }
+  for (uint8_t a = 0x20; a <= 0x3F; a++) {
+    if (lcdCandidate(a) && i2cDeviceFound(a)) return a;
+  }
+  return 0;
+}
+
+void printI2cScan() {
+  Serial.print(F("I2C scan:"));
+  uint8_t n = 0;
+  for (uint8_t a = 1; a < 127; a++) {
+    if (i2cDeviceFound(a)) {
+      Serial.print(F(" 0x"));
+      if (a < 16) Serial.print('0');
+      Serial.print(a, HEX);
+      n++;
+    }
+  }
+  if (n == 0) Serial.print(F(" none (check SDA=D2, SCL=D1, GND)"));
+  Serial.println();
+}
+
+// Creates and initialises the LCD if a backpack answers. Safe to call again later.
+bool lcdStart() {
+  uint8_t a = findLcdAddress();
+  if (!a) return false;
+  if (!lcd || a != lcdAddr) {
+    delete lcd;
+    lcd = new LiquidCrystal_I2C(a, 16, 2);
+  }
+  lcdAddr = a;
+  lcd->init();
+  lcd->backlight();
+  return true;
 }
 
 void haltWithMessage(const char *line1, const char *line2) {
-  lcd.clear();
+  lcdClear();
   lcdLine(0, line1);
   lcdLine(1, line2);
   Serial.print(F("HALT: "));
@@ -352,22 +408,27 @@ void setup() {
   delay(100);
   Wire.begin(D2, D1);   // SDA=D2 (GPIO4), SCL=D1 (GPIO5)
 
-  lcd.init();
-  lcd.backlight();
+  Serial.println();
+  Serial.print(F("LightCheck KM firmware ")); Serial.println(FW_VERSION);
+  printI2cScan();
+  if (lcdStart()) {
+    Serial.print(F("LCD found at 0x")); Serial.println(lcdAddr, HEX);
+  } else {
+    Serial.println(F("WARN: no LCD backpack found on I2C (expected 0x27 or 0x3F)."));
+    Serial.println(F("      Check LCD VCC -> 5V (not 3V3), GND, SDA -> D2, SCL -> D1."));
+    Serial.println(F("      Continuing on Serial only; the LCD is retried every 5 s."));
+  }
   lcdLine(0, "LightCheck v1.1");
   lcdLine(1, "Checking HW...");
   Serial.println(F("Checking hardware..."));
   delay(800);
 
-  lcdLine(1, "LCD 0x3F ...");
-  delay(400);
-  if (!i2cDeviceFound(LCD_ADDR)) {
-    // LCD is already being used to show startup status; warn on Serial only.
-    Serial.println(F("WARN: LCD not ACKing at 0x3F (try 0x27)"));
-  } else {
-    lcdLine(1, "LCD: OK");
+  if (lcd) {
+    char buf[17];
+    snprintf(buf, sizeof(buf), "LCD 0x%02X: OK", lcdAddr);
+    lcdLine(1, buf);
+    delay(500);
   }
-  delay(500);
 
   lcdLine(1, "TSL2591 0x29...");
   delay(400);
@@ -399,12 +460,12 @@ void setup() {
 
   printCalibrationInfo();
 
-  lcd.clear();
+  lcdClear();
   lcdLine(0, "All systems GO");
   lcdLine(1, CALIBRATION_ENABLED ? "CAL: ON" : "CAL: RAW MODE");
   Serial.println(F("Hardware check passed."));
   delay(1200);
-  lcd.clear();
+  lcdClear();
 }
 
 // -------------------------------------------------------------------------
@@ -412,6 +473,14 @@ void setup() {
 // -------------------------------------------------------------------------
 
 void loop() {
+  // LCD not found at boot (loose wire, no 5 V)? keep looking every 5 s.
+  if (!lcd && millis() - lcdLastProbeMs > 5000) {
+    lcdLastProbeMs = millis();
+    if (lcdStart()) {
+      Serial.print(F("LCD found at 0x")); Serial.println(lcdAddr, HEX);
+    }
+  }
+
   uint32_t lum  = tsl.getFullLuminosity();
   uint16_t ir   = lum >> 16;
   uint16_t full = lum & 0xFFFF;

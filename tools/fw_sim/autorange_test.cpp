@@ -5,10 +5,13 @@ unsigned long g_ms=0; SerialMock Serial; TwoWire Wire;
 double g_true_lux=400; double g_gain_actual[4]={1.0,24.5,400.0,9200.0}; double g_ratio_ir=0.132;
 double g_jitter=0.0; std::mt19937 g_rng(2569);
 #include SKETCH  // passed with -DSKETCH="\"file.ino\""
+// v1.0 keeps the LCD as an object, v1.1.1+ as a pointer created after auto-detect
+inline LiquidCrystal_I2C& lcdRef(LiquidCrystal_I2C& l){ return l; }
+inline LiquidCrystal_I2C& lcdRef(LiquidCrystal_I2C* l){ return *l; }
 #include <vector>
 struct R { int levels=0, osc=0, sat=0, office=0, office_med=0; };
 R settleAt(double e, R r){ g_true_lux=e; std::vector<int> gs; int sats=0;
-  for(int i=0;i<14;i++){ loop(); if(i>=6){ gs.push_back(tsl.getGain()); if(lcd.rows[0][5]=='S') sats++; } }
+  for(int i=0;i<14;i++){ loop(); if(i>=6){ gs.push_back(tsl.getGain()); if(lcdRef(lcd).rows[0][5]=='S') sats++; } }
   int ch=0; for(size_t i=1;i<gs.size();i++) if(gs[i]!=gs[i-1]) ch++;
   r.levels++; if(ch) r.osc++; if(sats) r.sat++;
   if(e>=100 && e<=2900){ r.office++; if(gs.back()==TSL2591_GAIN_MED) r.office_med++; }

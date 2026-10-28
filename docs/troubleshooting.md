@@ -2,8 +2,11 @@
 
 | อาการ | สาเหตุที่พบบ่อย | วิธีแก้ |
 |---|---|---|
-| LCD ติดไฟแต่ไม่มีตัวอักษร | ความคมชัด (contrast) ต่ำ | หมุน trimpot สีฟ้าด้านหลัง backpack จนเห็นตัวอักษร |
-| Serial เตือน `LCD not ACKing at 0x3F` | backpack เป็น PCF8574 (0x27) | แก้ `#define LCD_ADDR 0x27` แล้วอัปโหลดใหม่ หรือสแกน I2C เพื่อดู address จริง |
+| LCD ไม่ขึ้นอะไรเลย แต่ Serial มีค่าวัด | ดูบรรทัด `I2C scan:` และ `LCD found at` ตอนเปิดเครื่อง (กดปุ่ม RST ขณะเปิด Serial Monitor) | ดู 3 แถวถัดไป |
+| ไฟพื้นหลัง LCD ไม่ติดเลย | VCC ของ LCD ต่อ 3V3 หรือหลุด, jumper `LED` บน backpack หลุด | ต่อ VCC ของ backpack ที่ขา **5V** ของ D1 mini, GND ร่วม, เสียบ jumper LED |
+| ไฟพื้นหลังติด แต่ไม่มีตัวอักษร | ความคมชัด (contrast) ต่ำสุด/สูงสุด | หมุน trimpot สีฟ้าด้านหลัง backpack ช้า ๆ จนเห็นตัวอักษร (ถ้าเห็นเป็นแถบสี่เหลี่ยมทึบ แปลว่าจอยังไม่ถูกสั่งงาน ให้ตรวจแถวถัดไป) |
+| Serial เตือน `no LCD backpack found on I2C` (`I2C scan:` มีแค่ 0x29) | สาย SDA/SCL ของจอสลับหรือหลุด, VCC/GND ของจอหลุด | ตรวจสาย SDA → D2, SCL → D1 ที่ขา backpack; firmware **v1.1.1** หาแอดเดรสเองทั้ง 0x27 และ 0x3F และลองหาจอใหม่ทุก 5 วินาที |
+| (v1.1.0 หรือเก่ากว่า) Serial เตือน `LCD not ACKing at 0x3F` | backpack เป็น PCF8574 (0x27) | อัปเดตเป็น v1.1.1 (หาแอดเดรสอัตโนมัติ) หรือแก้แอดเดรสในโค้ดเป็น 0x27 |
 | `TSL2591 NOT FOUND @ 0x29` | สาย SDA/SCL สลับ ไฟ 3V3 หรือ GND หลุด | ตรวจตาม [wiring.md](wiring.md); SDA = D2, SCL = D1 |
 | `Sensor read returned 0/0` | เซนเซอร์ถูกปิดทึบ หรือสายหลวม | เปิดหัวรับแสง ตรวจสายแล้วรีเซ็ต |
 | v1.0 ขึ้น `Lux: SATURATED` สลับกับตัวเลข | bug auto-range ของ v1.0 แกว่ง gain | อัปเดตเป็น firmware **v1.1.0** (แก้แล้ว ดู CHANGELOG และ `tools/fw_sim`) |

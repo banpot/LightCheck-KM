@@ -7,6 +7,7 @@
 #define F(x) (x)
 #define D1 5
 #define D2 4
+#define HEX 16
 extern unsigned long g_ms;
 inline void delay(unsigned long ms){ g_ms += ms; }
 inline unsigned long millis(){ return g_ms; }
@@ -21,6 +22,8 @@ struct SerialMock {
   void print(unsigned v){ line += std::to_string(v); }
   void print(long v){ line += std::to_string(v); }
   void print(unsigned long v){ line += std::to_string(v); }
+  void print(unsigned char v, int base){ char b[8]; snprintf(b,8, base==16 ? "%X" : "%u", v); line += b; }
+  void println(unsigned char v, int base){ print(v, base); flushLine(); }
   void print(double v, int d=2){ char b[64]; snprintf(b,64,"%.*f",d,v); line += b; }
   template<class T> void println(T v){ print(v); flushLine(); }
   void println(double v, int d){ print(v,d); flushLine(); }

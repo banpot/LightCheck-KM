@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1] – 2026-10-28
+### Firmware
+- **Fixed** blank LCD when the backpack is a PCF8574T (0x27): v1.1.0 used a fixed address (0x3F) and only warned on
+  Serial. The LCD address is now auto-detected (0x27, 0x3F, then 0x20–0x27 / 0x38–0x3F); `LCD_ADDR_FIXED` forces one.
+- **Added** I2C bus scan in the boot log (`I2C scan: 0x27 0x29`) and `LCD found at 0x..`.
+- **Added** Serial-only mode when no LCD answers, with a retry every 5 s (a re-seated cable starts the display without a reset).
+- Measurement logic unchanged: `tools/fw_sim` results identical to v1.1.0; new boot test covers 0x3F, 0x27, missing and hot-plug.
+
 ## [Enclosure 1.1] – 2026-10-27
 ### Hardware
 - **Fixed** screw holes too tight to drive on FDM prints (holes print 0.2–0.4 mm undersize):

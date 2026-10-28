@@ -30,3 +30,23 @@ jitter/reading  CV(single raw)  CV(LCD value)  readings with '*'
      1.5 %          1.50 %          0.64 %           91.2 %
      3.0 %          3.00 %          1.53 %           18.5 %
      6.0 %          6.00 %          2.61 %            1.0 %
+
+== boot: I2C scan + LCD auto-detect (0x3F, 0x27, missing, plugged in later) ==
+---- LCD backpack at 0x3F ----
+I2C scan: 0x29 0x3F
+LCD found at 0x3F
+----------------------------------
+lcd=yes addr=0x3F  row0=[RLux: 252.27    ]
+---- LCD backpack at 0x27 ----
+I2C scan: 0x27 0x29
+LCD found at 0x27
+----------------------------------
+lcd=yes addr=0x27  row0=[RLux: 252.27 *  ]
+---- LCD backpack at 0x00 ----
+I2C scan: 0x29
+WARN: no LCD backpack found on I2C (expected 0x27 or 0x3F).
+----------------------------------
+lcd=no addr=0x00  row0=[-]
+---- plug the LCD (0x27) in after boot ----
+LCD found at 0x27
+lcd=yes addr=0x27 at t=11240 ms  row0=[RLux: 252.27 *  ]

@@ -20,3 +20,9 @@ cp "$FW" mock/current.ino
 g++ -std=c++17 -w -Imock -DSKETCH="\"current.ino\"" -x c++ flicker_test.cpp -o /tmp/fwsim_flicker
 /tmp/fwsim_flicker
 rm -f mock/current.ino mock/v10.ino
+echo
+echo "== boot: I2C scan + LCD auto-detect (0x3F, 0x27, missing, plugged in later) =="
+cp "$FW" mock/current.ino
+g++ -std=c++17 -w -Imock -DSKETCH="\"current.ino\"" -x c++ boot_test.cpp -o /tmp/fwsim_boot
+/tmp/fwsim_boot | grep -E "^(----|I2C scan|LCD found|WARN|lcd=)"
+rm -f mock/current.ino

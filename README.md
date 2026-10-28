@@ -32,7 +32,7 @@ P วางแผน (เกณฑ์ + ผังจุดวัด) → D ต�
 
 1. ซื้ออุปกรณ์ตาม [hardware/bom.md](hardware/bom.md) และพิมพ์กล่องจาก [hardware/enclosure/stl/](hardware/enclosure/stl/)
 2. ต่อวงจรตาม [docs/wiring.md](docs/wiring.md)
-3. อัปโหลด [firmware v1.1.0](firmware/LightCheck_TSL2591_Calibrated/LightCheck_TSL2591_Calibrated.ino) ตาม [docs/user-manual.md](docs/user-manual.md)
+3. อัปโหลด [firmware v1.1.1](firmware/LightCheck_TSL2591_Calibrated/LightCheck_TSL2591_Calibrated.ino) ตาม [docs/user-manual.md](docs/user-manual.md)
 4. สอบเทียบกับเครื่องอ้างอิงตาม [calibration/README.md](calibration/README.md)
 5. ลงพื้นที่ตาม [docs/measurement-SOP.md](docs/measurement-SOP.md) ใช้ [grid_planner.py](tools/survey/grid_planner.py) สร้างจุดวัดและแบบบันทึก
 
