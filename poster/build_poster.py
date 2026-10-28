@@ -313,7 +313,7 @@ margin-top:10pt;text-align:center}}
   <div class="two" style="margin-top:6pt">
     <div><img src="assets/photos/print_ender6.jpg" alt="" data-name="ภาพที่ 4 พิมพ์กล่อง Ender-6" style="width:100%;height:225pt;object-fit:cover;border-radius:14pt;display:block">
       <div class="cap"><b>ภาพที่ 4</b> พิมพ์ด้วย Creality Ender-6</div></div>
-    <div><div class="ph" style="height:225pt" data-pptx="img" data-photo="1" data-name="ภาพที่ 5 (คลิกขวา > Change Picture เพื่อใส่รูปเครื่องจริง)">{CAMERA}<b>ใส่รูป: เครื่องต้นแบบ<br>ที่ประกอบเสร็จ</b></div>
+    <div><img src="assets/photos/lightcheck_assembled.jpg" alt="" data-name="ภาพที่ 5 เครื่องที่ประกอบเสร็จ" style="width:100%;height:225pt;object-fit:cover;border-radius:14pt;display:block">
       <div class="cap"><b>ภาพที่ 5</b> เครื่องที่ประกอบเสร็จ พร้อมใช้</div></div>
   </div>
   <h3>อัลกอริทึมใน firmware v1.1</h3>
